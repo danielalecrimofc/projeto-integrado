@@ -1,6 +1,10 @@
-import "./App.css"
-function App() {
-  return( <div className="container">Hello World</div>);
-}
 
+import { AppRouter } from "./routes";
+import "./assets/general.css";
+
+export const App = () => {
+  return (
+    <AppRouter />
+  );
+}
 export default App;

@@ -1,10 +1,9 @@
-
+import { Link } from "react-router-dom";
 import {useState} from "react";
-import "../../assets/general.css"
 import { LayoutAuth } from "../../components/LayoutAuth"
 import logo_servmais_app from "../../assets/logo_servmais_app.png"
 
-function Login() {
+export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return(
@@ -41,13 +40,11 @@ function Login() {
 
             <div className="text-center">
               <span className="txt1">Não possui conta? </span>
-              <a className="txt2" href="-">
-                Criar conta
-              </a>
+              <Link to="/register">Register</Link>
             </div>
           </form>
       </LayoutAuth> 
   );
 }
 
-export default Login;
+

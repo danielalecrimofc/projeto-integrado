@@ -1,5 +1,5 @@
 import "./LayoutAuth.css";
-export const LayoutComponents = (props) => {
+export const LayoutAuth = (props) => {
   return (
     <div className="container">
       <div className="container-login">
