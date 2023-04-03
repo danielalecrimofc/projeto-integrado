@@ -15,7 +15,7 @@ export const Register = () => {
         <span className="login-form-title"> Criar Conta </span>
 
         <span className="login-form-title">
-          <img src={logo_servmais_app} alt="Jovem Programador" />
+          <img src={logo_servmais_app} alt="Service Mais" />
         </span>
 
         <div className="wrap-input">
@@ -55,7 +55,7 @@ export const Register = () => {
         <div className="text-center">
           <span className="txt1">Já possui conta? </span>
           <Link className="txt2" to="/login">
-            Acessar com Email e Senha.
+            Logue com Email e Senha
           </Link>
         </div>
       </form>

@@ -40,7 +40,7 @@ export const Login = () => {
 
             <div className="text-center">
               <span className="txt1">Não possui conta? </span>
-              <Link to="/register">Register</Link>
+              <Link className="txt2" to="/register">Crie sua conta</Link>
             </div>
           </form>
       </LayoutAuth> 
