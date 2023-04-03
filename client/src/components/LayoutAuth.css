@@ -1,0 +1,24 @@
+.container {
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .container-login {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: linear-gradient(45deg, rgba(2,0,36,1) 0%, rgba(30,121,9,1) 50%, rgba(0,255,21,1) 95%);
+  }
+  
+  .wrap-login {
+    width: 390px;
+    background: rgb(24, 12, 12,0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 77px 55px 33px 55px;
+    box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.2);
+  }

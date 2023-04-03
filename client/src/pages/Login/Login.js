@@ -1,17 +1,16 @@
 
 import {useState} from "react";
-import "./Login.css"
+import "../../assets/general.css"
+import { LayoutAuth } from "../../components/LayoutAuth"
 import logo_servmais_app from "../../assets/logo_servmais_app.png"
+
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return(
-      <div className="container">
-      <div className="container-login">
-        <div className="wrap-login">
+      <LayoutAuth>
           <form className="login-form">
             <span className="login-form-title"> Login </span>
-
             <span className="login-form-title">
               <img src={logo_servmais_app} alt="Service Mais" />
             </span>
@@ -47,9 +46,7 @@ function Login() {
               </a>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
+      </LayoutAuth> 
   );
 }
 
