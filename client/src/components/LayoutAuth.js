@@ -8,3 +8,5 @@ export const LayoutAuth = (props) => {
     </div>
   );
 };
+
+export default LayoutAuth;

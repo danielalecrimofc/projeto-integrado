@@ -6,13 +6,17 @@ import { Login } from "../pages/Login/Login";
 
 import { Register } from "../pages/Register/Register";
 
+import { NotFoundPage } from "../components/NotFoundPage";
+
+
 export const AppRouter = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route exact path="/" element={<Home />} />
+        <Route exact path="/login" element={<Login />} />
+        <Route exact path="/register" element={<Register />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
