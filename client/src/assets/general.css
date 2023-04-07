@@ -151,7 +151,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 50px;
+    margin-top: 15px;
   }
   
   .txt1 {
@@ -168,11 +168,3 @@
     text-decoration: none;
   }
 
-  p{
-    background-color: #2e7d32;
-    border:2px solid white;
-    border-radius: 5px;
-    color: white;
-    text-align: center;
-    margin: 10px;
-  }

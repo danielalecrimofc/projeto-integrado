@@ -53,9 +53,9 @@ export const Register = () => {
         </div>
 
         <div className="text-center">
-          <span className="txt1">Já possui conta? </span>
+          <span className="txt1">Tem uma conta? </span>
           <Link className="txt2" to="/login">
-            Logue com Email e Senha
+            Faça o Login
           </Link>
         </div>
       </form>

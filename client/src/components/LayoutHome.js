@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import "./LayoutHome.css";
 import { FaBars, FaTimes } from "react-icons/fa";
+import logo_servmais_app from "../assets/logo_servmais_app.png";
 export const LayoutHome = (props) =>{
 	const navRef = useRef();
 
@@ -13,6 +14,9 @@ export const LayoutHome = (props) =>{
 	return (
 		<header>
 			<h3>Serv+</h3>
+      <span className="logo-edit">
+        <img src={logo_servmais_app} alt="Service Mais" />
+      </span>
 			<nav ref={navRef}>
 				<a href="/#">Home</a>
 				<a href="/#">Login</a>
