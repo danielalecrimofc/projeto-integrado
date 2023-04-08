@@ -1,40 +1,96 @@
-import { useRef } from "react";
+import { useState } from "react";
 import "./LayoutHome.css";
-import { FaBars, FaTimes } from "react-icons/fa";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography, // importar o componente Typography
+  makeStyles, // importar o hook makeStyles
+} from "@material-ui/core";
+import { Menu, Close } from "@material-ui/icons";
 import logo_servmais_app from "../assets/logo_servmais_app.png";
-export const LayoutHome = (props) =>{
-	const navRef = useRef();
+import {Link} from "react-router-dom";
+const useStyles = makeStyles((theme) => ({
+  header: {
+    display: "flex",
+    alignItems: "center", // centraliza os elementos verticalmente
+  },
+  logo: {
+    height: 60,
+    marginRight: theme.spacing(1),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
 
-	const showNavbar = () => {
-		navRef.current.classList.toggle(
-			"responsive_nav"
-		);
-	};
+export const LayoutHome = (props) => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const classes = useStyles(); // usar o hook makeStyles para definir as classes de estilo
 
-	return (
-		<header>
-			<h3>Serv+</h3>
-      <span className="logo-edit">
-        <img src={logo_servmais_app} alt="Service Mais" />
-      </span>
-			<nav ref={navRef}>
-				<a href="/#">Home</a>
-				<a href="/#">Login</a>
-				<a href="/#">Register</a>
-				<button
-					className="nav-btn nav-close-btn"
-					onClick={showNavbar}>
-					<FaTimes />
-				</button>
-			</nav>
-			<button
-				className="nav-btn"
-				onClick={showNavbar}>
-				<FaBars />
-			</button>
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false);
+  };
+
+  return (
+    <>
+      <AppBar position="static">
+        <Toolbar className={classes.header}>
+          <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
+            <Menu />
+          </IconButton>
+          <div className={classes.logoContainer}>
+            <Link to="/">
+                <img src={logo_servmais_app} alt="Service Mais" className={classes.logo} />
+                <Typography variant="h6" className={classes.title}>
+                  Serv+
+                </Typography>
+            </Link>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
+        <div
+          style={{
+            width: 250,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <List>
+            <ListItem button onClick={handleDrawerClose}>
+              <ListItemIcon>
+                <Close />
+              </ListItemIcon>
+              <ListItemText primary="Close" />
+            </ListItem>
+            <ListItem button component={Link} to = "/">
+              <ListItemText primary="Home" />
+            </ListItem>
+            <ListItem button component={Link} to = "/login">
+              <ListItemText primary="Login" />
+            </ListItem>
+            <ListItem button component={Link} to = "/register">
+              <ListItemText primary="Register" />
+            </ListItem>
+          </List>
+        </div>
+      </Drawer>
       {props.children}
-		</header>
-	);
-}
+    </>
+  );
+};
 
 export default LayoutHome;
