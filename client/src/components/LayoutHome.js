@@ -12,7 +12,7 @@ import {
   Typography, // importar o componente Typography
   makeStyles, // importar o hook makeStyles
 } from "@material-ui/core";
-import { Menu, Close } from "@material-ui/icons";
+import { Menu, Close,Home, Lock, PersonAdd } from "@material-ui/icons";
 import logo_servmais_app from "../assets/logo_servmais_app.png";
 import {Link} from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
@@ -25,8 +25,18 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
   title: {
-    flexGrow: 1,
+    flexGrow: 1, // remove o sublinhado do link
   },
+  icon: {
+    color: "white",
+  },
+  listItem: {
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#7fbf7f",
+      color: "white",
+  },
+  }
 }));
 
 export const LayoutHome = (props) => {
@@ -43,18 +53,16 @@ export const LayoutHome = (props) => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" style={{ background: 'rgba(0, 0, 0, 0.8)' }}>
         <Toolbar className={classes.header}>
           <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
             <Menu />
           </IconButton>
           <div className={classes.logoContainer}>
-            <Link to="/">
-                <img src={logo_servmais_app} alt="Service Mais" className={classes.logo} />
-                <Typography variant="h6" className={classes.title}>
-                  Serv+
-                </Typography>
-            </Link>
+            <img src={logo_servmais_app} alt="Service Mais" className={classes.logo} />
+              <Typography variant="h6" className={classes.title}>
+                Serv+
+              </Typography>
           </div>
         </Toolbar>
       </AppBar>
@@ -67,22 +75,32 @@ export const LayoutHome = (props) => {
             height: "100%",
             justifyContent: "center",
             alignItems: "center",
+            background: "linear-gradient(45deg, rgba(2,0,36,1) 0%, rgba(30,121,9,1) 50%, rgba(0,255,21,1) 95%)",
           }}
         >
           <List>
-            <ListItem button onClick={handleDrawerClose}>
-              <ListItemIcon>
+            <ListItem button onClick={handleDrawerClose} className={classes.listItem}>
+              <ListItemIcon className={classes.icon}>
                 <Close />
               </ListItemIcon>
               <ListItemText primary="Close" />
             </ListItem>
-            <ListItem button component={Link} to = "/">
+            <ListItem button component={Link} to = "/" className={classes.listItem}>
+              <ListItemIcon className={classes.icon}>
+                <Home />
+              </ListItemIcon>
               <ListItemText primary="Home" />
             </ListItem>
-            <ListItem button component={Link} to = "/login">
+            <ListItem button component={Link} to = "/login" className={classes.listItem}>
+              <ListItemIcon className={classes.icon}>
+                <Lock />
+              </ListItemIcon>
               <ListItemText primary="Login" />
             </ListItem>
-            <ListItem button component={Link} to = "/register">
+            <ListItem button component={Link} to = "/register" className={classes.listItem}>
+              <ListItemIcon className={classes.icon}>
+                <PersonAdd />
+              </ListItemIcon>
               <ListItemText primary="Register" />
             </ListItem>
           </List>

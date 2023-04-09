@@ -76,10 +76,9 @@ export const ContentHome = () => {
           <section className="how-to-use">
             <h2>Como utilizar o Serv+</h2>
             <ol>
-              <li>Cadastre um novo serviço com a nome,descrição,status e valor;</li>
-              <li>Visualize os serviços cadastrados na agenda;</li>
-              <li>Edite ou exclua os serviços conforme necessário;</li>
-              <li>Receba notificações dos serviços agendados.</li>
+              <li>Cadastre um novo serviço com a nome,descrição,status e valor</li>
+              <li>Visualize os serviços cadastrados na agenda</li>
+              <li>Edite ou exclua os serviços conforme necessário</li>
             </ol>
           </section>
         </div>
@@ -87,10 +86,10 @@ export const ContentHome = () => {
           <section className="benefits">
             <h2>Benefícios</h2>
             <ul>
-              <li>Melhor organização dos serviços;</li>
-              <li>Aumento da produtividade;</li>
-              <li>Redução do estresse;</li>
-              <li>Melhoria na satisfação dos clientes.</li>
+              <li>Melhor organização dos serviços</li>
+              <li>Aumento da produtividade</li>
+              <li>Redução do estresse</li>
+              <li>Melhoria na satisfação dos clientes</li>
             </ul>
           </section>
         </div>
@@ -98,13 +97,13 @@ export const ContentHome = () => {
           <section className="requirements">
           <h2>Requisitos</h2>
             <ul>
-              <li>Navegador web moderno (recomendamos Google Chrome ou Mozilla Firefox);</li>
-              <li>Acesso à internet.</li>
+              <li>Navegador web moderno (recomendamos Google Chrome ou Edge)</li>
+              <li>Acesso à internet</li>
             </ul>
           </section>
         </div>
       </AutoPlaySwipeableViews>
-      <AppBar position="static" className="appbar">
+      <AppBar position="static" className="appbar" style={{ background: 'rgba(0, 0, 0, 0.8)' }}>
         <Toolbar>
           <Button
             className={`${classes.button} ${
