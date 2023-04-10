@@ -1,5 +1,6 @@
 import { LayoutHome } from "../../components/LayoutHome";
 import unidecode from 'unidecode';
+import 'react-intl';
 import React from "react";
 import {
   Table,
@@ -108,6 +109,37 @@ export const Crud = () => {
     step: 10.00,
     onChange: validateNumber
   };
+
+  const CustomInput = (props) => {
+    const { inputRef, onChange, onBlur, ...other } = props;
+  
+    const formatValue = (value) => {
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+      }).format(value);
+    };
+  
+    return (
+      <input
+        {...other}
+        ref={inputRef}
+        onChange={(e) => {
+          const value = e.target.value.replace(/\D/g, '');
+          onChange({
+            target: {
+              name: props.name,
+              value: value,
+            },
+          });
+        }}
+        onBlur={onBlur}
+        value={formatValue(props.value)}
+      />
+    );
+  };
+  
 
   React.useEffect(() => {
     localStorage.setItem("services", JSON.stringify(services));
@@ -226,7 +258,10 @@ export const Crud = () => {
             type="number"
             margin="normal"
             variant="outlined"
-            inputProps={inputProps}
+            inputProps={{
+              inputComponent: CustomInput,
+              ...inputProps
+            }}
             fullWidth
             />
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -294,7 +329,7 @@ export const Crud = () => {
             <TextField
             label="Valor"
             name="value"
-            value={editService ? editService.value : ''}
+            value={editService ? editService.value: '' }
             onChange={handleEditInputChange}
             type="number"
             margin="normal"
