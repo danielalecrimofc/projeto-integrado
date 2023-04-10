@@ -1,7 +1,8 @@
-const sql = require("mssql");
-const express = require("express");
-
-const app = express();
+const sql = require("mssql");// importa a biblioteca mssql para utilizar o banco dedados sql server
+const express = require("express");// importa a biblioteca express para criar o servidor web
+const ejs = require('ejs');// importa a biblioteca ejs ) que permite renderizar HTML com dados dinâmicos em aplicativos Node.js/Para renderizar as telas no back. 
+const app = express();//criando o servidor web por meio da variável app
+app.use(express.static(__dirname + '/public'));
 
 //Criando a variável para autenticação do banco de dados
 const config = {
