@@ -5,16 +5,23 @@ import logo_servmais_app from "../../assets/logo_servmais_app.png"
 import  { useNavigate } from  'react-router-dom';
 import axios from 'axios';
 
+// Exporta a função 'loginUser', que recebe dois parâmetros: email e password
 export const loginUser = async (email, password) => {
   try {
+    // Faz uma requisição POST para a URL 'http://localhost:3001/login', enviando o email e password no corpo da requisição
     const response = await axios.post('http://localhost:3001/login', {
       email: email,
       password: password
     });
-    localStorage.setItem('token', response.data.token); // Armazena o token no Local Storage
+    // Armazena o token retornado pela API no Local Storage do navegador
+    localStorage.setItem('token', response.data.token);
+    // Imprime a resposta da API no console
     console.log(response.data);
+    // Retorna os dados retornados pela API
     return response.data;
+    //Caso ocorra algum erro na requisição ele será capturado
   } catch (error) {
+    //O erro que foi capturado será mostrado no console
     console.error(error);
   }
 }
@@ -24,20 +31,29 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  // Função assíncrona que será chamada quando o formulário de login for submetido
   const handleLogin = async (e) => {
+    // Previne o comportamento padrão do formulário de atualizar a página quando submetido
     e.preventDefault();
     try {
+      // chama a função loginUser passando email e senha como parâmetros
       const response = await loginUser(email, password);
+      //Imprime no console a resposta 
       console.log(response); 
+      // verifica se o token foi recebido na resposta
       if (!response.token) {
+        // lança um erro caso o token não seja encontrado
         throw new Error('Token not found in response');
       }
+      // armazena o token da resposta em uma variável
       const token = response.token;
       // armazena o token no armazenamento local do navegador
       localStorage.setItem("token", token);
       // redireciona para a tela de CRUD do usuário
       navigate("/crud");
+      // captura algum erro que for gerado durante a execução do código
     } catch (error) {
+      // exibe mensagem de erro no console caso ocorra algum problema
       console.error(error);
       window.alert("Email ou senha inválidos");
       //  tratamento específico para diferentes tipos de erros
@@ -58,6 +74,21 @@ export const Login = () => {
                 type="email"
                 value={email}
                 required
+                pattern="^[a-z0-9]+([._]?[a-z0-9]+)*@gmail\.com$"
+                onInput={(e) => {
+                  console.log("onInput sendo chamado")
+                  const isValid = e.target.checkValidity();
+                  console.log(isValid)
+                  if (!isValid) {
+                    e.target.setCustomValidity("");
+                    e.target.title = "Por favor, insira um e-mail válido do Gmail (somente letras, números e pontos são permitidos, e o endereço deve terminar com '@gmail.com'";
+                  } else {
+                    e.target.setCustomValidity("");
+                    e.target.title = "";
+                  }
+                  setEmail(e.target.value);
+                  e.target.reportValidity();
+                }}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <span className="focus-input" data-placeholder="Email"></span>
@@ -69,6 +100,22 @@ export const Login = () => {
                 type="password"
                 value={password}
                 required
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{9,}$"
+                onInput={(e) => {
+                  console.log("onInput sendo chamado")
+                  const isValid = e.target.checkValidity();
+                  console.log(isValid)
+                  if (!isValid) {
+                    e.target.setCustomValidity("");
+                    e.target.title = "A senha deve ter pelo menos 9 caracteres, uma letra maiúscula, uma letra minúscula e um caractere especial";
+                  } else {
+                    e.target.setCustomValidity("");
+                    e.target.title = "";
+                  }
+                  setPassword(e.target.value);
+                  e.target.reportValidity();
+                }}
+                title="A senha deve ter pelo menos 9 caracteres, uma letra maiúscula, uma letra minúscula e um caractere especial"
                 onChange={(e) => setPassword(e.target.value)}
               />
               <span className="focus-input" data-placeholder="Password"></span>

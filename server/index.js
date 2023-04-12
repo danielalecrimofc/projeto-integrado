@@ -2,18 +2,19 @@ const sql = require("mssql");// importa a biblioteca mssql para utilizar o banco
 const express = require("express");// importa a biblioteca express para criar o servidor web
 const app = express();//criando o servidor web por meio da variável app
 const cors = require('cors');
+require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const  { InsertUser }   = require("./scripts_usu/InsertUser");
 const { validateLogin }  = require("./scripts_usu/validateLogin");
 
-//Criando a variável para autenticação do banco de dados
+//Variável de COnfiuração do Bd utilizando o arquivo env com as credenciais omitidas
 const config = {
-    user:'sa',
-    password:'danielsam1999',
-    server:'DESKTOP-RDICEJ4',
-    database:'serv_mais',
+    user:process.env._USER,
+    password:process.env._PASSWORD,
+    server:process.env._SERVER,
+    database:process.env._DATABASE,
     options: {
         trustServerCertificate: true
       }
@@ -48,7 +49,7 @@ app.get("/",(req, res) =>{
   
     try {
       const token = await validateLogin(email, password); // Chama a função de validação de login e recebe o token retornado
-      console.log(token);
+      console.log(token);//Mostra o token no console do servidor
       res.json({ token }); // Retorna o token como resposta da requisição
     } catch (err) {
       console.error(err);
