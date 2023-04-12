@@ -39,6 +39,7 @@ export const Login = () => {
       navigate("/crud");
     } catch (error) {
       console.error(error);
+      window.alert("Email ou senha inválidos");
       //  tratamento específico para diferentes tipos de erros
     }
   };
@@ -56,6 +57,7 @@ export const Login = () => {
                 className={email !== "" ? "has-val input" : "input"}
                 type="email"
                 value={email}
+                required
                 onChange={(e) => setEmail(e.target.value)}
               />
               <span className="focus-input" data-placeholder="Email"></span>
@@ -66,6 +68,7 @@ export const Login = () => {
                 className={password !== "" ? "has-val input" : "input"}
                 type="password"
                 value={password}
+                required
                 onChange={(e) => setPassword(e.target.value)}
               />
               <span className="focus-input" data-placeholder="Password"></span>
@@ -74,6 +77,7 @@ export const Login = () => {
             <div className="container-login-form-btn">
               <button type="submit" className="login-form-btn">Login</button>
             </div>
+
 
             <div className="text-center">
               <span className="txt1">Não possui conta? </span>
