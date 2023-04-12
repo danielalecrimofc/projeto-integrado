@@ -7,17 +7,15 @@ import axios from 'axios';
 
 
 const register = async (name, email, password) => {
-  console.log(name, email, password);
   try {
-    const response = await axios.post('http://localhost:3001/register', {
-      name,
-      email,
-      password,
-    });
-
-    console.log(response.data); 
+    const response = await axios.post('http://localhost:3001/register', { name, email, password });
+    return response.data;
   } catch (error) {
-    console.error(error);
+    if (error.response && error.response.status === 409) {
+      // email já cadastrado, retorna um erro customizado
+      throw new Error('Email já cadastrado');
+    }
+    throw error; // se não for erro de email já cadastrado, lança o erro original
   }
 };
 
@@ -28,16 +26,22 @@ export const Register = () => {
   const navigate = useNavigate();
 
   const handleRegister = async (event) => {
-    event.preventDefault(); // evita o comportamento padrão do formulário
-
+    event.preventDefault();
+  //logica de tratamento que vai capturar os eventos no back e ira mostrar por aqui
     try {
-      await register(name, email, password); // chama a função register passando os dados do usuário
-      navigate('/login');// redireciona para a página de login
+      const result = await register(name, email, password);
+      if (result.error) {
+        window.alert(result.error);
+      } else {
+        navigate('/login');
+      }
     } catch (error) {
       console.error(error);
+      window.alert('Erro ao cadastrar usuário');
     }
   };
-
+  
+  
   return (
     <LayoutAuth >
       <form className="login-form" onSubmit={handleRegister}>
@@ -52,6 +56,7 @@ export const Register = () => {
             className={name !== "" ? "has-val input" : "input"}
             type="text"
             value={name}
+            required
             onChange={(e) => {
               console.log(e.target.value); // Adicione este console.log para verificar se o valor está sendo atualizado
               setName(e.target.value);
@@ -65,6 +70,7 @@ export const Register = () => {
             className={email !== "" ? "has-val input" : "input"}
             type="email"
             value={email}
+            required
             onChange={(e) => setEmail(e.target.value)}
           />
           <span className="focus-input" data-placeholder="Email"></span>
@@ -75,6 +81,7 @@ export const Register = () => {
             className={password !== "" ? "has-val input" : "input"}
             type="password"
             value={password}
+            required
             onChange={(e) => setPassword(e.target.value)}
           />
           <span className="focus-input" data-placeholder="Password"></span>

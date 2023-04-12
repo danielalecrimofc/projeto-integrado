@@ -8,9 +8,11 @@ import { Register } from "../pages/Register/Register";
 
 import { Crud } from "../pages/Crud/Crud";
 
+import  PrivateRoute  from "./PrivateRoute/PrivateRoute"
+
 import { NotFoundPage } from "../components/NotFoundPage";
 
-import  PrivateRoute  from "./PrivateRoute/PrivateRoute";
+//import  PrivateRoute  from "./PrivateRoute/PrivateRoute";
 
 export const AppRouter = () => {
   const isAuthenticated = true; // exemplo de variável definida com valor booleano indicando se o usuário está autenticado ou não
@@ -25,10 +27,15 @@ export const AppRouter = () => {
           path="/crud/*"
           element={<PrivateRoute isAuthenticated={isAuthenticated}><Crud /></PrivateRoute>}
         />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route  path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
 };
 
+/*<Route
+          exact
+          path="/crud/*"
+          element={<PrivateRoute isAuthenticated={isAuthenticated}><Crud /></PrivateRoute>}
+        />*/
 export default AppRouter;
