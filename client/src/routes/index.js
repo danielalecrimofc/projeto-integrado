@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router,Routes, Route } from "react-router-dom";
 
 import { Home } from "../pages/Home/Home";
 
@@ -10,15 +10,21 @@ import { Crud } from "../pages/Crud/Crud";
 
 import { NotFoundPage } from "../components/NotFoundPage";
 
+import  PrivateRoute  from "./PrivateRoute/PrivateRoute";
 
 export const AppRouter = () => {
+  const isAuthenticated = true; // exemplo de variável definida com valor booleano indicando se o usuário está autenticado ou não
   return (
     <Router>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
-        <Route exact path="/crud" element={<Crud />} />
+        <Route
+          exact
+          path="/crud/*"
+          element={<PrivateRoute isAuthenticated={isAuthenticated}><Crud /></PrivateRoute>}
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
