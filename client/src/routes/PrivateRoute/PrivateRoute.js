@@ -2,13 +2,16 @@
 import React from 'react';
 import { Navigate } from "react-router";
 
+// Declaração de uma função componente chamada "PrivateRoute" que recebe "children" como parâmetro.
+//Children é usado para representar os componentes que são passados como filhos para o componente PrivateRoute
 function PrivateRoute({ children }) {
+    // Verifica se há um token de autenticação no Local Storage do navegador.
   const isAuthenticated = !!localStorage.getItem('token');
-    // Se o Usuário estiver autenticado o if será executado e renderizará a minha tela de crud
+   // Se o usuário estiver autenticado, renderiza o componente filho (ou seja, a tela de CRUD).
   if (isAuthenticated) {
     return children;
   }
-    //Senão o que será renderizado será minha tela de Login
+   // Caso contrário, redireciona o usuário para a tela de login.
   return <Navigate to="/login" />;
 }
 
