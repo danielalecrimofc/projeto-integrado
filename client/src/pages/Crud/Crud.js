@@ -20,6 +20,8 @@ import {
   InputLabel,
 } from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
+import axios from "axios";
+
 
 const initialService = {
   name: "",
@@ -34,9 +36,33 @@ export const Crud = () => {
   const [service, setService] = React.useState(initialService);
   const [editService, setEditService] = React.useState(null);
   const [editModal, setEditModal] = React.useState(false);
-  const [services, setServices] = React.useState(
-    JSON.parse(localStorage.getItem("services")) || []
-  );
+  const [services, setServices] = React.useState([]);
+
+  //url do endpoint que pega todos os serviços do usuário
+  const API_URL = "http://localhost:3001/services";
+  //url do endpoint que cadastra um novo serviço para usuário
+  const API_URL_POST = "http://localhost:3001/services";
+  //url do endpoint que edita um  serviço para usuário
+  const API_URL_PUT = "http://localhost:3001/services/:id";
+  //url do endpoint que deleta um  serviço para usuário
+  const API_URL_DELETE = "http://localhost:3001/services/:id";
+
+  // Pegando o token de autenticação  para poder fzr as requisições parao usuário
+  const AUTH_TOKEN = localStorage.getItem("token");
+
+  //Função para mostrar os dados atualizados na tela de crud
+  const fetchServices = React.useCallback(async () => {
+    try {
+      const response = await axios.get(`${API_URL}/services`, {
+        headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+      });
+      setServices(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [AUTH_TOKEN]);
+  
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -66,21 +92,43 @@ export const Crud = () => {
   };
 
   const handleSaveService = () => {
-    const newService = { ...service, id: Date.now() };
-    setServices((prevServices) => [...prevServices, newService]);
-    setService(initialService);
-    setOpenModal(false);
+    axios.post(
+      API_URL_POST,
+      { ...service, id: Math.floor(Math.random() * 100000) },
+      { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } }
+    )
+      .then((response) => {
+        setServices((prevServices) => [...prevServices, response.data]);
+        setService(initialService);
+        setOpenModal(false);
+        fetchServices();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handleEditService = (id) => {
-    const editedServiceIndex = services.findIndex((s) => s.id === id);
-    const editedService = { ...services[editedServiceIndex], ...editService };
-    const newServices = [...services];
-    newServices.splice(editedServiceIndex, 1, editedService);
-    setServices(newServices);
-    setEditService(null);
-    setEditModal(false);
+    axios.put(
+      `${API_URL_PUT}/${id}`,
+      editService,
+      { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } }
+    )
+      .then((response) => {
+        const editedServiceIndex = services.findIndex((s) => s.id === id);
+        const editedService = response.data;
+        const newServices = [...services];
+        newServices.splice(editedServiceIndex, 1, editedService);
+        setServices(newServices);
+        setEditService(null);
+        setEditModal(false);
+        fetchServices();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
+  
 
   const handleEditInputChange = (event) => {
     const { name, value } = event.target;
@@ -89,10 +137,22 @@ export const Crud = () => {
   };
 
   const handleDeleteService = (id) => {
-    const newServices = services.filter((s) => s.id !== id);
-    setServices(newServices);
+    axios.delete(
+      `${API_URL_DELETE}/${id}`,
+      { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } }
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          const newServices = services.filter((s) => s.id !== id);
+          setServices(newServices);
+          fetchServices();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
-
+  
   function validateNumber(event) {
     const value = parseFloat(event.target.value);
     const maxValue = 9999999999.99;
@@ -140,11 +200,10 @@ export const Crud = () => {
     );
   };
   
-
   React.useEffect(() => {
-    localStorage.setItem("services", JSON.stringify(services));
-    localStorage.clear();
-  }, [services]);
+    fetchServices();
+  }, [fetchServices]);
+  
 
 
   return (
@@ -259,7 +318,7 @@ export const Crud = () => {
             margin="normal"
             variant="outlined"
             inputProps={{
-              inputComponent: CustomInput,
+              inputcomponent: CustomInput,
               ...inputProps
             }}
             fullWidth

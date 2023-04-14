@@ -15,10 +15,10 @@ const config = {
 
 //Função de inserção/cadastro de Usuários
 // Função assíncrona que recebe três parâmetros: name, email e password
-async function InsertUser(name, email, password) {
+async function InsertUser(name_user, email, password) {
   try {
     // imprime no console os valores de name, email e password para fins de debug
-    console.log(name, email, password); 
+    console.log(name_user, email, password); 
     // Conecta com o banco de dados
     const pool = await sql.connect(config);
 
@@ -41,10 +41,10 @@ async function InsertUser(name, email, password) {
 
     // Insere o novo usuário
     // Define a query de inserção do novo usuário na tabela "Usuario"
-    const queryInsertUser = `INSERT INTO Usuario (name_user, email, password_user) VALUES (@name, @email,@password)`;
+    const queryInsertUser = `INSERT INTO Usuario (name_user, email, password_user) VALUES (@name_user, @email,@password)`;
     // Cria um objeto "request" com as variáveis da query inserção
     const requestInsertUser = pool.request()
-      .input('name', sql.NVarChar, name)
+      .input('name_user', sql.NVarChar, name_user)
       .input('email', sql.NVarChar, email)
       .input('password', sql.NVarChar, password);
     // Executa a query de inserção do novo usuário no banco de dados

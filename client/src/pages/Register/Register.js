@@ -26,7 +26,7 @@ const register = async (name, email, password) => {
 export const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("")
+  const [name_email, setName] = useState("")
   const navigate = useNavigate();
 
   // Função assíncrona que será chamada quando o formulário de cadastro for submetido
@@ -36,7 +36,7 @@ export const Register = () => {
   //logica de tratamento que vai capturar os eventos no back e ira mostrar por aqui
     try {
        // Chama a função assíncrona "register" para inserir um novo usuário no banco de dados
-      const result = await register(name, email, password);
+      const result = await register(name_email, email, password);
       // Verifica se a propriedade "error" foi definida no objeto retornado pela função "register"
       if (result.error) {
         // Exibe um alerta com a mensagem de erro retornada pela função "register"
@@ -68,9 +68,9 @@ export const Register = () => {
 
         <div className="wrap-input">
           <input
-            className={name !== "" ? "has-val input" : "input"}
+            className={name_email !== "" ? "has-val input" : "input"}
             type="text"
-            value={name}
+            value={name_email}
             required
             pattern="^[\p{L}\p{M}'-]+(?: [\p{L}\p{M}'-]+)*$"
             onInput={(e) => {
