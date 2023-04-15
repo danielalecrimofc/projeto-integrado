@@ -21,7 +21,7 @@ import {
 } from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
 import axios from "axios";
-
+import Cookies from 'js-cookie';
 
 const initialService = {
   name: "",
@@ -47,8 +47,8 @@ export const Crud = () => {
   //url do endpoint que deleta um  serviço para usuário
   const API_URL_DELETE = "http://localhost:3001/services/:id";
 
-  // Pegando o token de autenticação  para poder fzr as requisições parao usuário
-  const AUTH_TOKEN = localStorage.getItem("token");
+  // Pegando o token de autenticação  para poder fazer as requisições para o usuário
+  const AUTH_TOKEN = Cookies.get('token');
 
   //Função para mostrar os dados atualizados na tela de crud
   const fetchServices = React.useCallback(async () => {

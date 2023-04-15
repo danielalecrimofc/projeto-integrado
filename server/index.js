@@ -64,17 +64,22 @@ app.get("/",(req, res) =>{
 
   const authMiddleware = (req, res, next) => {
     try {
-      const token = req.headers.authorization.split(' ')[1];// assume-se que o token está no formato 'Bearer <token>'
-      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);// 'chave-secreta' é a chave que você utilizou para gerar o token JWT
-      req.userId = decodedToken.userId; // atribui o valor do userId ao objeto req
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).send('Unauthorized');
+      }
+      const token = authHeader.replace('Bearer ', ''); // remove "Bearer " da string de autorização
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // decodifica o token
+      req.userId = decodedToken.userId;
       console.log(decodedToken);
       console.log(req.userId);
-      next(); // chama a próxima função no pipeline
+      next();
     } catch (err) {
       console.error(err);
       res.status(401).send('Unauthorized');
     }
   };
+  
 
 //endpoint para o cadastro
 app.post('/register', async (req, res) => {

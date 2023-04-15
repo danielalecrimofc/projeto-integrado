@@ -1,7 +1,6 @@
 //Componenete utilizado para Ser uma máscara para a rota de crud.
 import React from 'react';
 import { Navigate } from "react-router";
-
 // Declaração de uma função componente chamada "PrivateRoute" que recebe "children" como parâmetro.
 //Children é usado para representar os componentes que são passados como filhos para o componente PrivateRoute
 function PrivateRoute({ children }) {
