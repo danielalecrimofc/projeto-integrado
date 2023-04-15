@@ -45,7 +45,7 @@ const validateLogin = async (email, password) => {
       throw new Error('Senha incorreta');
     }
     // Gera um token de autenticação para o usuário encontrado
-    const token = generateAuthToken(user.id);
+    const token = generateAuthToken(user.id_user);
     // Retorna o token
     return token;
     // Se ocorrer um erro durante a execução do código acima, captura o erro e lança um novo erro informando que houve um erro ao validar o login

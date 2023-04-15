@@ -4,6 +4,7 @@ import { LayoutAuth } from "../../components/LayoutAuth"
 import logo_servmais_app from "../../assets/logo_servmais_app.png"
 import  { useNavigate } from  'react-router-dom';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 // Exporta a função 'loginUser', que recebe dois parâmetros: email e password
 export const loginUser = async (email, password) => {
@@ -14,7 +15,9 @@ export const loginUser = async (email, password) => {
       password: password
     });
     // Armazena o token retornado pela API no Local Storage do navegador
-    localStorage.setItem('token', response.data.token);
+    //localStorage.setItem('token', response.data.token);//
+     // Armazena o token retornado pela API em um cookie chamado 'token' com tempo de validação de 7 dias
+     Cookies.set('token', response.data.token, { expires: 7 });
     // Imprime a resposta da API no console
     console.log(response.data);
     // Retorna os dados retornados pela API
@@ -65,7 +68,7 @@ export const Login = () => {
           <form className="login-form" onSubmit={handleLogin}>
             <span className="login-form-title"> Login </span>
             <span className="login-form-title">
-              <img src={logo_servmais_app} alt="Service Mais" />
+              <Link to="/" ><img src={logo_servmais_app} alt="Service Mais" /></Link>
             </span>
 
             <div className="wrap-input">
