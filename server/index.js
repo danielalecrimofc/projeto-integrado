@@ -93,7 +93,7 @@ app.post('/register', async (req, res) => {
     }
   });
 
-  app.get('/services', authMiddleware, async (req, res) => {
+  app.get('/service', authMiddleware, async (req, res) => {
     try {
       const userId = req.userId; // userId vem do middleware de autenticação
       const services = await getServicesByUserId(userId);
@@ -108,8 +108,8 @@ app.post('/register', async (req, res) => {
     try {
       const userId = req.userId; // userId vem do middleware de autenticação
       const {name,description,status,value } = req.body;
-      console.log(req.body);
-      console.log(userId);
+      //console.log(req.body);
+      
       const newService = await createService(name,description,status,value,userId);
       res.json({ ...newService, id: newService.id });
     } catch (err) {
@@ -118,22 +118,27 @@ app.post('/register', async (req, res) => {
     }
   });
   
-  app.put('/services/:id', authMiddleware, async (req, res) => {
+  app.put('/services',authMiddleware, async (req, res) => {
     try {
-      const { id } = req.params;
-      const { name, description,status,value} = req.body;
-      const editedService = await editService(id, name, description,status,value);
+      const { id_service, name_service, description_service, status_service, value_service } = req.body;
+      console.log("id chegando",id_service);
+      console.log(typeof value_service);
+      console.log(value_service);
+      const editedService = await editService(id_service, name_service, description_service, status_service, value_service );
       res.json(editedService);
     } catch (err) {
+
       console.error(err);
       res.status(500).send('Internal server error');
     }
   });
   
-  app.delete('/services/:id', authMiddleware, async (req, res) => {
+  
+  app.delete('/services',authMiddleware, async (req, res) => {
     try {
-      const { id } = req.params;
-      await deleteService(id);
+      const {id_service} = req.body;
+      console.log(id_service);
+      await deleteService(id_service);
       res.sendStatus(200);
     } catch (err) {
       console.error(err);

@@ -15,7 +15,7 @@ const config = {
 async function getServicesByUserId(userId) {
     try {
       await sql.connect(config);
-      const result = await sql.query(`SELECT * FROM services WHERE userId = ${userId}`);
+      const result = await sql.query(`SELECT * FROM Servico WHERE id_user = ${userId}`);
       return result.recordset;
     } catch (err) {
       console.error(err);

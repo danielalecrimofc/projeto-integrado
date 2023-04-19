@@ -24,7 +24,7 @@ export const AppRouter = () => {
         <Route exact path="/register" element={<Register />} />
         <Route
           exact
-          path="/crud/*"
+          path="/services/*"
           element={<PrivateRoute isAuthenticated={isAuthenticated}><Crud /></PrivateRoute>}
         />
         <Route  path="*" element={<NotFoundPage />} />
