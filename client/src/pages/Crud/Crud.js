@@ -23,7 +23,6 @@ import {
 import { Edit, Delete } from "@material-ui/icons";
 import axios from "axios";
 import Cookies from 'js-cookie';
-
 const initialService = {
   name: "",
   description: "",
@@ -97,14 +96,17 @@ export const Crud = () => {
      // Se o campo que foi alterado é o valor, faz a conversão
   if (name === "value") {
     const floatValue = parseFloat(value.replace(",", ".")).toFixed(2);
-    setService((prevService) => ({ ...prevService, [name]: floatValue }));
+    setService((prevService) => ({ ...prevService, [name]: floatValue}));
   } else {
     setService((prevService) => ({ ...prevService, [name]: value }));
   }
   };
 
   const handleSaveService = () => {
-    console.log(service);
+    if (!service.name || !service.description || !service.status || !service.value) {
+      alert("Por favor Preencha todos os campos");
+      return;
+    }
     axios.post(
       API_URL_POST,
       { ...service },
