@@ -24,7 +24,7 @@ async function editService(serviceId, name, description, status, value) {
       request.input('name', sql.NVarChar, name);
       request.input('description', sql.NVarChar, description);
       request.input('status', sql.NVarChar, status);
-      request.input('value', sql.Decimal(10, 2), Number(value).toFixed(2));
+      request.input('value', sql.Decimal(10, 2), Number(value.toFixed(2)));
 
       request.on('error', (err) => {
         console.error(err,"erro que ta acontecendo");
@@ -35,7 +35,7 @@ async function editService(serviceId, name, description, status, value) {
       name_service = COALESCE(NULLIF(@name, ''), name_service),
       description_service = COALESCE(NULLIF(@description, ''), description_service),
       status_service = COALESCE(NULLIF(@status, ''), status_service),
-      value_service = COALESCE(NULLIF(CONVERT(DECIMAL(10, 2), REPLACE(@value, ',', '.')), ''), value_service)
+      value_service = COALESCE(NULLIF(@value, ''), value_service)
       WHERE id_service = @serviceId;
       SELECT @@ROWCOUNT AS rowsAffected;`;
 
