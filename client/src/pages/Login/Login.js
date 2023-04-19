@@ -16,12 +16,11 @@ export const loginUser = async (email, password) => {
     });
     // Armazena o token retornado pela API no Local Storage do navegador
     //localStorage.setItem('token', response.data.token);//
-     // Armazena o token retornado pela API em um cookie chamado 'token' com tempo de validação de 7 dias
-     Cookies.set('token', response.data.token, { expires: 7 });
+    // Armazena o token retornado pela API nos cookies
     // Imprime a resposta da API no console
-    console.log(response.data);
-    // Retorna os dados retornados pela API
-    return response.data;
+    console.log("dados",response.data);
+    // Retorna os dados retornados com o token pela API
+    return response.data.token;
     //Caso ocorra algum erro na requisição ele será capturado
   } catch (error) {
     //O erro que foi capturado será mostrado no console
@@ -44,21 +43,29 @@ export const Login = () => {
       //Imprime no console a resposta 
       console.log(response); 
       // verifica se o token foi recebido na resposta
-      if (!response.token) {
+      if (!response) {
         // lança um erro caso o token não seja encontrado
         throw new Error('Token not found in response');
       }
       // armazena o token da resposta em uma variável
-      const token = response.token;
+      const token = response;
       // armazena o token no armazenamento local do navegador
-      localStorage.setItem("token", token);
+      Cookies.set("token", token, {expires: 7});
       // redireciona para a tela de CRUD do usuário
-      navigate("/crud");
+      navigate("/services");
       // captura algum erro que for gerado durante a execução do código
     } catch (error) {
       // exibe mensagem de erro no console caso ocorra algum problema
-      console.error(error);
-      window.alert("Email ou senha inválidos");
+      if (error.response && error.response.status === 401) {
+        // erro de login inválido
+        window.alert("Email ou senha inválidos");
+      } else {
+        // erro genérico
+        console.error(error);
+        window.alert("Ocorreu um erro ao fazer login. Por favor, tente novamente mais tarde.");
+      }
+      //console.error(error);
+      //window.alert("Email ou senha inválidos");
       //  tratamento específico para diferentes tipos de erros
     }
   };

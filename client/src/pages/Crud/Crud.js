@@ -18,6 +18,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  InputAdornment,
 } from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
 import axios from "axios";
@@ -30,39 +31,44 @@ const initialService = {
   value: "",
 };
 
+
+
 export const Crud = () => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [openModal, setOpenModal] = React.useState(false);
   const [service, setService] = React.useState(initialService);
   const [editService, setEditService] = React.useState(null);
   const [editModal, setEditModal] = React.useState(false);
-  const [services, setServices] = React.useState([]);
+  const [services,setServices] = React.useState([]);
 
   //url do endpoint que pega todos os serviços do usuário
-  const API_URL = "http://localhost:3001/services";
+  const API_URL = "http://localhost:3001/service";
   //url do endpoint que cadastra um novo serviço para usuário
   const API_URL_POST = "http://localhost:3001/services";
   //url do endpoint que edita um  serviço para usuário
-  const API_URL_PUT = "http://localhost:3001/services/:id";
+  const API_URL_PUT = "http://localhost:3001/services";
   //url do endpoint que deleta um  serviço para usuário
-  const API_URL_DELETE = "http://localhost:3001/services/:id";
+  const API_URL_DELETE = "http://localhost:3001/services";
 
   // Pegando o token de autenticação  para poder fazer as requisições para o usuário
   const AUTH_TOKEN = Cookies.get('token');
-
+  
   //Função para mostrar os dados atualizados na tela de crud
-  const fetchServices = React.useCallback(async () => {
+ const fetchServices = React.useCallback(async () => {
     try {
-      const response = await axios.get(`${API_URL}/services`, {
+      const response = await axios.get(API_URL,{
         headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
       });
+      
+      console.log(response.data);
       setServices(response.data);
+      //console.log(response);
     } catch (error) {
       console.error(error);
     }
   }, [AUTH_TOKEN]);
-  
-
+ 
+  console.log(services);
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -88,34 +94,44 @@ export const Crud = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+     // Se o campo que foi alterado é o valor, faz a conversão
+  if (name === "value") {
+    const floatValue = parseFloat(value.replace(",", ".")).toFixed(2);
+    setService((prevService) => ({ ...prevService, [name]: floatValue }));
+  } else {
     setService((prevService) => ({ ...prevService, [name]: value }));
+  }
   };
 
   const handleSaveService = () => {
+    console.log(service);
     axios.post(
       API_URL_POST,
-      { ...service, id: Math.floor(Math.random() * 100000) },
+      { ...service },
       { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } }
     )
       .then((response) => {
         setServices((prevServices) => [...prevServices, response.data]);
         setService(initialService);
         setOpenModal(false);
+        console.log(services);
         fetchServices();
       })
       .catch((error) => {
         console.error(error);
       });
   };
+  
 
   const handleEditService = (id) => {
     axios.put(
-      `${API_URL_PUT}/${id}`,
-      editService,
+      API_URL_PUT,
+      {...editService},
       { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } }
     )
+    
       .then((response) => {
-        const editedServiceIndex = services.findIndex((s) => s.id === id);
+        const editedServiceIndex = services.findIndex((service) => service.id === id);
         const editedService = response.data;
         const newServices = [...services];
         newServices.splice(editedServiceIndex, 1, editedService);
@@ -137,23 +153,29 @@ export const Crud = () => {
   };
 
   const handleDeleteService = (id) => {
+    console.log(id);
     axios.delete(
-      `${API_URL_DELETE}/${id}`,
-      { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } }
+      API_URL_DELETE,
+      { 
+        headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+        data: { id_service: id }
+      }
     )
-      .then((response) => {
+     .then((response) => {
         if (response.status === 200) {
-          const newServices = services.filter((s) => s.id !== id);
+          const newServices = services.filter((service) => service.id_service !== id);
           setServices(newServices);
           fetchServices();
         }
       })
       .catch((error) => {
+        console.error(error.response.status);
+        console.error(error.response.data);
         console.error(error);
       });
   };
   
-  function validateNumber(event) {
+  /*function validateNumber(event) {
     const value = parseFloat(event.target.value);
     const maxValue = 9999999999.99;
   
@@ -168,9 +190,9 @@ export const Crud = () => {
     max: 9999999999.99,
     step: 10.00,
     onChange: validateNumber
-  };
+  };*/
 
-  const CustomInput = (props) => {
+  /*const CustomInput = (props) => {
     const { inputRef, onChange, onBlur, ...other } = props;
   
     const formatValue = (value) => {
@@ -198,13 +220,58 @@ export const Crud = () => {
         value={formatValue(props.value)}
       />
     );
+  };*/
+  const isNotUnique = (services) => {
+    const duplicateServices = [];
+    console.log(services);
+    //console.log("services", services);
+    for (let i = 0; i < services.length; i++) {
+      for (let j = i + 1; j < services.length; j++) {
+        if (services[i].id_service === services[j].id_service) {
+          console.log(services);
+          duplicateServices.push(services[i]);
+          duplicateServices.push(services[j]);
+          console.log("Há serviços com IDs duplicados:", duplicateServices);
+        }
+      }
+    }
+   
+    return duplicateServices;
   };
-  
-  React.useEffect(() => {
-    fetchServices();
-  }, [fetchServices]);
-  
 
+  //console.log(services);
+  React.useEffect(() => {
+   //console.log('chamou o useEffect com o fetchServices');
+   fetchServices();
+  }, [fetchServices]);
+  /*React.useEffect(() => {
+    console.log('chamou o useEffect com o fetchServices');
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get(API_URL, {
+          headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+        });
+  
+        console.log(response.data);
+        console.log(services);
+        setServices([...response.data]);
+        console.log(services); // adicionar console.log aqui
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    
+    fetchServices();
+  }, [AUTH_TOKEN, setServices]);*/
+  
+  /*React.useEffect(() => {
+   console.log(services);
+  }, [services]);*/
+  console.log(services);
+ if (isNotUnique(services)) {
+    const duplicateServices = isNotUnique(services);
+    console.log(duplicateServices);
+  }
 
   return (
     <LayoutHome>
@@ -242,27 +309,34 @@ export const Crud = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {services
-                  .filter((service) =>
-                  unidecode(service.name.toLowerCase()).includes(unidecode(searchTerm.toLowerCase()))
-                  )
+              {services
+                .filter((service) => {
+                    const searchTermNormalized = unidecode(searchTerm.toLowerCase() || '');
+                    if (!searchTermNormalized) {
+                        return true; // Retorna true para mostrar todos os serviços se não houver um searchTerm
+                    }
+                    const serviceNameNormalized = unidecode(service.name_service.toLowerCase());
+                    return serviceNameNormalized.includes(searchTermNormalized);
+                  })
                   .map((service) => (
-                    <TableRow key={service.id}>
-                      <TableCell>{service.id}</TableCell>
-                      <TableCell>{service.name}</TableCell>
-                      <TableCell>{service.description}</TableCell>
-                      <TableCell>{service.status}</TableCell>
-                      <TableCell>{service.value}</TableCell>
-                      <TableCell>
-                        <IconButton onClick={() => handleOpenEditModal(service)}>
-                          <Edit />
-                        </IconButton>
-                        <IconButton onClick={() => handleDeleteService(service.id)}>
-                          <Delete />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                    //Aqui na TableRow coloquei o service.id_service + 1 para não dar conflito de ids duplicados
+                      <TableRow key={service.id_service + 1}>
+                          <TableCell >{service.id_service}</TableCell>
+                          <TableCell >{service.name_service}</TableCell>
+                          <TableCell >{service.status_service}</TableCell>
+                          <TableCell >{service.description_service}</TableCell>
+                          <TableCell >R$ {service.value_service}</TableCell>
+                          <TableCell>
+                              <IconButton onClick={() => handleOpenEditModal(service)}>
+                                  <Edit />
+                              </IconButton>
+                              <IconButton onClick={() => handleDeleteService(service.id_service)}>
+                                  <Delete />
+                              </IconButton>
+                          </TableCell>
+                      </TableRow>
+                  ))
+                }
               </TableBody>
             </Table>
           </TableContainer>
@@ -306,23 +380,36 @@ export const Crud = () => {
                     label="Status"
                 >
                     <MenuItem value="Pendente">Pendente</MenuItem>
+                    <MenuItem value="Em andamento">Em andamento</MenuItem>
                     <MenuItem value="Realizado">Realizado</MenuItem>
                 </Select>
             </FormControl>
             <TextField
             label="Valor"
             name="value"
-            value={service.value}
+            value={service.value ? service.value : ""}
             onChange={handleInputChange}
-            type="number"
+            type="text"
             margin="normal"
             variant="outlined"
             inputProps={{
-              inputcomponent: CustomInput,
-              ...inputProps
+              min: 0,
+              max: 9999999999.99,
+              step: 0.01,
+              onFocus: (event) => {
+                event.target.select();
+              },
+            }}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+              title: "Coloque um valor permitido",
+              placeholder: "0.00",
             }}
             fullWidth
-            />
+          />
+
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Button
                 color="secondary"
@@ -382,6 +469,7 @@ export const Crud = () => {
                 label="Status"
             >
                 <MenuItem value="Pendente">Pendente</MenuItem>
+                <MenuItem value="Em andamento">Em andamento</MenuItem>
                 <MenuItem value="Realizado">Realizado</MenuItem>
             </Select>
             </FormControl>
@@ -393,7 +481,6 @@ export const Crud = () => {
             type="number"
             margin="normal"
             variant="outlined"
-            inputProps={inputProps}
             fullWidth
             />
             <div style={{ display: "flex", justifyContent: "flex-end" }}>

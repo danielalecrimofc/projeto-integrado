@@ -12,9 +12,11 @@ import {
   Typography, // importar o componente Typography
   makeStyles, // importar o hook makeStyles
 } from "@material-ui/core";
-import { Menu, Close,Home, Lock, PersonAdd } from "@material-ui/icons";
+import { Menu, Close,Home, Lock, PersonAdd,Assignment } from "@material-ui/icons";
 import logo_servmais_app from "../assets/logo_servmais_app.png";
 import {Link} from "react-router-dom";
+import Cookies from 'js-cookie';
+import  { useNavigate } from  'react-router-dom';
 const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
@@ -42,13 +44,24 @@ const useStyles = makeStyles((theme) => ({
 export const LayoutHome = (props) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const classes = useStyles(); // usar o hook makeStyles para definir as classes de estilo
-
+  const navigate = useNavigate();
+  const isAuthenticated = Cookies.get('token');
+  const expirationDate = new Date(Date.now() - 1000);
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };
 
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
+  };
+
+  const handleLogout = () => {
+    // remover o cookie do navegador
+    Cookies.remove('token', { expires: expirationDate, path: "/" });
+    /*Quando o token for removido o isAuthenticated vai ficar 'false' pois ele é definido pela presença do token,
+    sendo assim a rota para o crud será fechada*/
+    // redirecionar o usuário para a página de login
+    navigate("/login");
   };
 
   return (
@@ -103,6 +116,22 @@ export const LayoutHome = (props) => {
               </ListItemIcon>
               <ListItemText primary="Register" />
             </ListItem>
+            {isAuthenticated ? (
+            <>
+              <ListItem button component={Link} to="/services" className={classes.listItem}>
+                <ListItemIcon className={classes.icon}>
+                  <Assignment />
+                </ListItemIcon>
+                <ListItemText primary="Services" />
+              </ListItem>
+              <ListItem button onClick={handleLogout} className={classes.listItem}>
+                <ListItemIcon className={classes.icon}>
+                  <Lock />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItem>
+            </>
+            ) : null}
           </List>
         </div>
       </Drawer>

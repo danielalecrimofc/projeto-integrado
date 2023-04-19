@@ -16,9 +16,12 @@ const config = {
 async function deleteService(serviceId) {
     try {
       await sql.connect(config);
-  
-      const query = `DELETE FROM services WHERE id_service = @serviceId`;
-      await sql.query(query, { serviceId });
+      const request = new sql.Request();
+
+      request.input('serviceId', sql.Int, serviceId);
+      const query = `DELETE FROM Servico WHERE id_service = @serviceId`;
+      
+      await request.query(query);
   
       await sql.close();
   
