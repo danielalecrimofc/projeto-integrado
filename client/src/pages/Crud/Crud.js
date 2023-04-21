@@ -23,6 +23,35 @@ import {
 import { Edit, Delete } from "@material-ui/icons";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import { makeStyles } from "@material-ui/core/styles";
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& .MuiInputBase-input": {
+      color: "white",
+    },
+    "& .MuiInputLabel-filled": {
+      color: "white",
+      "&.MuiInputLabel-shrink": {
+        transform: "translate(12px, 8px)",
+      },
+    },
+    "& .MuiFilledInput-underline:before": {
+      borderBottom: "none",
+    },
+    "& .MuiFilledInput-root": {
+      "&.Mui-focused": {
+        "& fieldset": {
+          borderColor: "white",
+          borderWidth: "1px",
+        },
+      },
+    },
+  },
+}));
+
+
+
+
 const initialService = {
   name: "",
   description: "",
@@ -39,7 +68,7 @@ export const Crud = () => {
   const [editService, setEditService] = React.useState(null);
   const [editModal, setEditModal] = React.useState(false);
   const [services,setServices] = React.useState([]);
-
+  const classes = useStyles();
   //url do endpoint que pega todos os serviços do usuário
   const API_URL = "http://localhost:3001/service";
   //url do endpoint que cadastra um novo serviço para usuário
@@ -299,13 +328,14 @@ export const Crud = () => {
             label="Pesquisar"
             variant="filled"
             value={searchTerm}
+            className= {classes.root}
             onChange={(event) => setSearchTerm(event.target.value)}
             style={{marginTop: "1rem", backgroundColor: "rgb(24, 12, 12,0.8)" , borderRadius: "6px"}}
             InputLabelProps={{
               style: { color: "white"}
             }}
             inputProps={{
-              style: { color: "white" },
+              style: {color: "white"}
             }}
           />
         </div>
