@@ -13,7 +13,7 @@ const { createService }  = require("./scripts_crud/createService");
 const { deleteService }  = require("./scripts_crud/deleteService");
 const { editService }  = require("./scripts_crud/editService");
 const { getServicesByUserId }  = require("./scripts_crud/getServicesByUserId");
-
+const { getUserById }  = require("./scripts_usu/getUserById");
 //Variável de COnfiuração do Bd utilizando o arquivo env com as credenciais omitidas
 const config = {
     user:process.env._USER,
@@ -62,6 +62,7 @@ app.get("/",(req, res) =>{
     }
   });
 
+  //função utilizada para pegar os dados do usuário depois de autenticado e utilizar nas minhas operações de forma segura
   const authMiddleware = (req, res, next) => {
     try {
       const authHeader = req.headers.authorization;
@@ -71,6 +72,8 @@ app.get("/",(req, res) =>{
       const token = authHeader.replace('Bearer ', ''); // remove "Bearer " da string de autorização
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // decodifica o token
       req.userId = decodedToken.userId;
+      const user = await getUserById(req.userId);
+      req.userEmail = user.email; // Inclui o e-mail do usuário em req.userEmail
       console.log(decodedToken);
       console.log(req.userId);
       next();
