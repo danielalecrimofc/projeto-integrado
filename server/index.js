@@ -120,11 +120,9 @@ app.post('/register', async (req, res) => {
   
   app.put('/services',authMiddleware, async (req, res) => {
     try {
-      const { id_service, name_service, description_service, status_service, value_service } = req.body;
+      const { id_service, name, description, status, value } = req.body;
       console.log("id chegando",id_service);
-      console.log(typeof value_service);
-      console.log(value_service);
-      const editedService = await editService(id_service, name_service, description_service, status_service, value_service );
+      const editedService = await editService(id_service, name, description, status, value);
       res.json(editedService);
     } catch (err) {
 

@@ -87,7 +87,7 @@ export const Crud = () => {
 
 
   const handleSaveEditService = () => {
-    handleEditService(editService.id);
+    handleEditService(editService.id_service);
     handleCloseEditModal();
   }
 
@@ -135,6 +135,7 @@ export const Crud = () => {
       .then((response) => {
         const editedServiceIndex = services.findIndex((service) => service.id === id);
         const editedService = response.data;
+        console.log(editedService);
         const newServices = [...services];
         newServices.splice(editedServiceIndex, 1, editedService);
         setServices(newServices);
@@ -150,7 +151,12 @@ export const Crud = () => {
 
   const handleEditInputChange = (event) => {
     const { name, value } = event.target;
-    setEditService((prevService) => ({ ...prevService, [name]: value }));
+    if (name === "value") {
+      const floatValue = parseFloat(value.replace(",", ".")).toFixed(2);
+      setEditService((prevService) => ({ ...prevService, [name]: floatValue}));
+    } else {
+      setEditService((prevService) => ({ ...prevService, [name]: value }));
+    }
     console.log(service);
   };
 
@@ -274,6 +280,8 @@ export const Crud = () => {
     const duplicateServices = isNotUnique(services);
     console.log(duplicateServices);
   }
+  
+
 
   return (
     <LayoutHome>
@@ -289,14 +297,16 @@ export const Crud = () => {
           </Button>
           <TextField
             label="Pesquisar"
-            variant="outlined"
+            variant="filled"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
             style={{marginTop: "1rem", backgroundColor: "rgb(24, 12, 12,0.8)" , borderRadius: "6px"}}
             InputLabelProps={{
               style: { color: "white"}
             }}
-    
+            inputProps={{
+              style: { color: "white" },
+            }}
           />
         </div>
           <TableContainer component={Paper} style={{marginTop:'auto' , marginBottom: 16,overflowX:"auto"}}>
@@ -325,8 +335,8 @@ export const Crud = () => {
                       <TableRow key={service.id_service + 1}>
                           <TableCell >{service.id_service}</TableCell>
                           <TableCell >{service.name_service}</TableCell>
-                          <TableCell >{service.status_service}</TableCell>
                           <TableCell >{service.description_service}</TableCell>
+                          <TableCell >{service.status_service}</TableCell>
                           <TableCell >R$ {service.value_service}</TableCell>
                           <TableCell>
                               <IconButton onClick={() => handleOpenEditModal(service)}>
@@ -480,9 +490,24 @@ export const Crud = () => {
             name="value"
             value={editService ? editService.value: '' }
             onChange={handleEditInputChange}
-            type="number"
+            type="text"
             margin="normal"
             variant="outlined"
+            inputProps={{
+              min: 0,
+              max: 9999999999.99,
+              step: 0.01,
+              onFocus: (event) => {
+                event.target.select();
+              },
+            }}
+            InputProps={{
+              startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+              inputMode: "numeric",
+              pattern: "[0-9]*",
+              title: "Coloque um valor permitido",
+              placeholder: "0.00",
+            }}
             fullWidth
             />
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
