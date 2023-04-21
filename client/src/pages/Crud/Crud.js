@@ -189,13 +189,13 @@ export const Crud = () => {
     console.log(service);
   };
 
-  const handleDeleteService = (id) => {
+  const handleDeleteService = (id,name) => {
     console.log(id);
     axios.delete(
       API_URL_DELETE,
       { 
         headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
-        data: { id_service: id }
+        data: { id_service: id , name_service:name}
       }
     )
      .then((response) => {
@@ -372,7 +372,7 @@ export const Crud = () => {
                               <IconButton onClick={() => handleOpenEditModal(service)}>
                                   <Edit />
                               </IconButton>
-                              <IconButton onClick={() => handleDeleteService(service.id_service)}>
+                              <IconButton onClick={() => handleDeleteService(service.id_service,service.name_service)}>
                                   <Delete />
                               </IconButton>
                           </TableCell>

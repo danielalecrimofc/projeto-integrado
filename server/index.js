@@ -14,6 +14,9 @@ const { deleteService }  = require("./scripts_crud/deleteService");
 const { editService }  = require("./scripts_crud/editService");
 const { getServicesByUserId }  = require("./scripts_crud/getServicesByUserId");
 const { getUserById }  = require("./scripts_usu/getUserById");
+const { sendCreateNotificationEmail }  = require("./scripts_email/sendCreateNotificationEmail");
+const { sendEditNotificationEmail  }  = require("./scripts_email/sendEditNotificationEmail");
+const { sendDeleteNotificationEmail }  = require("./scripts_email/sendDeleteNotificationEmail");
 //Variável de COnfiuração do Bd utilizando o arquivo env com as credenciais omitidas
 const config = {
     user:process.env._USER,
@@ -63,7 +66,7 @@ app.get("/",(req, res) =>{
   });
 
   //função utilizada para pegar os dados do usuário depois de autenticado e utilizar nas minhas operações de forma segura
-  const authMiddleware = (req, res, next) => {
+  const authMiddleware = async (req, res, next) => {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
@@ -73,6 +76,7 @@ app.get("/",(req, res) =>{
       const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // decodifica o token
       req.userId = decodedToken.userId;
       const user = await getUserById(req.userId);
+      console.log(user);
       req.userEmail = user.email; // Inclui o e-mail do usuário em req.userEmail
       console.log(decodedToken);
       console.log(req.userId);
@@ -86,9 +90,9 @@ app.get("/",(req, res) =>{
 
 //endpoint para o cadastro
 app.post('/register', async (req, res) => {
-    const {name_user, email, password } = req.body;
+    const {name, email, password } = req.body;
     try {
-      const result = await InsertUser(name_user, email, password);
+      const result = await InsertUser(name, email, password);
       res.status(201).json(result);
     } catch (err) {
         console.error(err); // Aqui exibimos o erro no console para fins de debug
@@ -110,11 +114,14 @@ app.post('/register', async (req, res) => {
   app.post('/services', authMiddleware, async (req, res) => {
     try {
       const userId = req.userId; // userId vem do middleware de autenticação
+      const userEmail = req.userEmail;//UserEmail vem do middleware de autenticação
       const {name,description,status,value } = req.body;
       //console.log(req.body);
       
       const newService = await createService(name,description,status,value,userId);
-      res.json({ ...newService, id: newService.id });
+      res.json({ ...newService, id: newService.id })
+       // Envia a notificação por e-mail
+      await sendCreateNotificationEmail(userEmail, name, description, status, value);
     } catch (err) {
       console.error(err);
       res.status(500).send('Internal server error');
@@ -124,9 +131,11 @@ app.post('/register', async (req, res) => {
   app.put('/services',authMiddleware, async (req, res) => {
     try {
       const { id_service, name, description, status, value } = req.body;
+      const userEmail = req.userEmail;//UserEmail vem do middleware de autenticação
       console.log("id chegando",id_service);
       const editedService = await editService(id_service, name, description, status, value);
       res.json(editedService);
+      await sendEditNotificationEmail(userEmail, name, description, status, value);
     } catch (err) {
 
       console.error(err);
@@ -137,10 +146,13 @@ app.post('/register', async (req, res) => {
   
   app.delete('/services',authMiddleware, async (req, res) => {
     try {
-      const {id_service} = req.body;
+      const {id_service,name_service} = req.body;
+      console.log(name_service);
+      const userEmail = req.userEmail;
       console.log(id_service);
       await deleteService(id_service);
       res.sendStatus(200);
+      await sendDeleteNotificationEmail(userEmail,name_service);
     } catch (err) {
       console.error(err);
       res.status(500).send('Internal server error');
