@@ -18,7 +18,7 @@ async function sendCreateNotificationEmail(userEmail, serviceName, serviceDescri
       from: process.env.GMAIL_USER_ADMIN, // e-mail do app
       to: userEmail, // e-mail do usuário
       subject: 'Novo serviço cadastrado com sucesso',
-      html: `<p>Olá,</p><p>O serviço ${serviceName} foi cadastrado com sucesso.</p><p>Detalhes do serviço:</p><ul><li>Descrição: ${serviceDescription}</li><li>Status: ${serviceStatus}</li><li>Valor: ${serviceValue}</li></ul><p>Obrigado por utilizar nossos serviços!</p>`
+      html: `<p>Olá,</p><p>O serviço ${serviceName} foi cadastrado com sucesso.</p><p>Detalhes do serviço:</p><ul><li>Descrição: ${serviceDescription}</li><li>Status: ${serviceStatus}</li><li>Valor:R${serviceValue}</li></ul><p>Obrigado por utilizar nossos serviços!</p>`
     };
 
     // Envie o e-mail

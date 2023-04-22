@@ -114,7 +114,7 @@ export const LayoutHome = (props) => {
               <ListItemIcon className={classes.icon}>
                 <PersonAdd />
               </ListItemIcon>
-              <ListItemText primary="Register" />
+              <ListItemText primary="Cadastro" />
             </ListItem>
             {isAuthenticated ? (
             <>
@@ -122,7 +122,7 @@ export const LayoutHome = (props) => {
                 <ListItemIcon className={classes.icon}>
                   <Assignment />
                 </ListItemIcon>
-                <ListItemText primary="Services" />
+                <ListItemText primary="Serviços" />
               </ListItem>
               <ListItem button onClick={handleLogout} className={classes.listItem}>
                 <ListItemIcon className={classes.icon}>
