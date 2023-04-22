@@ -14,6 +14,7 @@ const { deleteService }  = require("./scripts_crud/deleteService");
 const { editService }  = require("./scripts_crud/editService");
 const { getServicesByUserId }  = require("./scripts_crud/getServicesByUserId");
 const { getUserById }  = require("./scripts_usu/getUserById");
+const { getServiceById }  = require("./scripts_crud/getServiceById");
 const { sendCreateNotificationEmail }  = require("./scripts_email/sendCreateNotificationEmail");
 const { sendEditNotificationEmail  }  = require("./scripts_email/sendEditNotificationEmail");
 const { sendDeleteNotificationEmail }  = require("./scripts_email/sendDeleteNotificationEmail");
@@ -130,12 +131,21 @@ app.post('/register', async (req, res) => {
   
   app.put('/services',authMiddleware, async (req, res) => {
     try {
-      const { id_service, name, description, status, value } = req.body;
+      const { id_service, name_service, description, status, value} = req.body;
       const userEmail = req.userEmail;//UserEmail vem do middleware de autenticação
       console.log("id chegando",id_service);
-      const editedService = await editService(id_service, name, description, status, value);
+      // Obter informações do serviço antes de editar
+      const beforeServiceInfo = await getServiceById(id_service);
+
+      //Editar Serviço
+      const editedService = await editService(id_service, name_service, description, status, value);
       res.json(editedService);
-      await sendEditNotificationEmail(userEmail, name, description, status, value);
+
+      // Obter informações do serviço após a edição
+      const afterServiceInfo = await getServiceById(id_service);
+
+      // Enviar notificação por e-mail
+      await sendEditNotificationEmail(userEmail,name_service, beforeServiceInfo, afterServiceInfo);
     } catch (err) {
 
       console.error(err);
