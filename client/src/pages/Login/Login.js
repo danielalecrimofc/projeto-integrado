@@ -139,6 +139,8 @@ export const Login = () => {
             <div className="text-center">
               <span className="txt1">Não possui conta? </span>
               <Link className="txt2" to="/register">Crie sua conta</Link>
+              <span className="txt1">Esqueceu a sua senha? </span>
+              <Link className="txt2" to="/passwordreset">Redefina sua senha</Link>
             </div>
           </form>
       </LayoutAuth> 
