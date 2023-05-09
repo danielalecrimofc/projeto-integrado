@@ -12,6 +12,12 @@ import  PrivateRoute  from "./PrivateRoute/PrivateRoute"
 
 import { NotFoundPage } from "../components/NotFoundPage";
 
+import {User} from "../pages/User/User";
+
+import {PasswordReset} from "../pages/PasswordReset/PasswordReset";
+
+import {PasswordResetChange} from "../pages/PasswordReset/PasswordResetChange";
+
 //import  PrivateRoute  from "./PrivateRoute/PrivateRoute";
 
 export const AppRouter = () => {
@@ -22,6 +28,9 @@ export const AppRouter = () => {
         <Route exact path="/" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
+        <Route exact path="/passwordreset" element={<PasswordReset />} />
+        <Route exact path="/passwordresetchange" element={<PasswordResetChange />} />
+        <Route exact path="/user" element={<User />} />
         <Route
           exact
           path="/services/*"

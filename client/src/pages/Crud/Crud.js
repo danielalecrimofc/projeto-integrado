@@ -24,6 +24,7 @@ import { Edit, Delete } from "@material-ui/icons";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { makeStyles } from "@material-ui/core/styles";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     "& .MuiInputBase-input": {
@@ -48,8 +49,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
-
 
 
 const initialService = {
