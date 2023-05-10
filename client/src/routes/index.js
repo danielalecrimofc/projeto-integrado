@@ -29,7 +29,7 @@ export const AppRouter = () => {
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
         <Route exact path="/passwordreset" element={<PasswordReset />} />
-        <Route exact path="/passwordresetchange" element={<PasswordResetChange />} />
+        <Route exact path="/passwordresetchange/:token" element={<PasswordResetChange />} />
         <Route exact path="/user" element={<PrivateRoute isAuthenticated={isAuthenticated}><User /></PrivateRoute>} />
         <Route
           exact

@@ -6,8 +6,6 @@ import axios from "axios";
 
 const useStyles = makeStyles({
   root: {
-    backgroundColor: "rgb(24, 12, 12,0.8)",
-    borderRadius: "5px",
     '& .MuiInput-underline:after': {
       borderBottomColor: 'white',
     },
@@ -36,7 +34,7 @@ export const PasswordReset = () => {
     // Aqui será feito a lógica para enviar o email de redefinição de senha para o usuário
     try {
       const response = await axios.post('http://localhost:3001/forgot-password', { email });
-      console.log(response.data.message);
+      alert(response.data.message);
       // aqui você pode mostrar uma mensagem de sucesso ou redirecionar o usuário para outra página
     } catch (error) {
       console.error(error);
