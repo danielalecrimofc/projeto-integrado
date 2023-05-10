@@ -3,6 +3,7 @@ const express = require("express");// importa a biblioteca express para criar o 
 const app = express();//criando o servidor web por meio da variável app
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 app.use(cors());
@@ -23,6 +24,10 @@ const { UpdateNameUser }  = require("./scripts_usu/UpdateNameUser");
 const { UpdateEmailUser }  = require("./scripts_usu/UpdateEmailUser");
 const { UpdatePasswordUser }  = require("./scripts_usu/UpdatePasswordUser");
 const { ComparePasswordUser } = require("./scripts_usu/ComparePasswordUser");
+const { getUserByEmail } = require("./scripts_usu/getUserByEmail");
+const { createPasswordResetToken } = require("./scripts_usu/createPasswordResetToken");
+const { getUserIdByTokenResetPass } = require('./scripts_usu/getUserIdByTokenResetPass');
+const {deleteResetToken} = require('./scripts_usu/deleteResetToken');
 //Variável de COnfiuração do Bd utilizando o arquivo env com as credenciais omitidas
 const config = {
     user:process.env._USER,
@@ -264,7 +269,7 @@ app.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
 
     // Buscar o usuário correspondente no banco de dados
-    const result = await pool.query('SELECT * FROM Usuario WHERE email = $1', [email]);
+    const result = await getUserByEmail(email);
 
     // Verificar se o usuário existe no banco de dados
     if (result.rowCount === 0) {
@@ -274,14 +279,14 @@ app.post('/forgot-password', async (req, res) => {
 
     // Gerar um token de redefinição de senha
     const resetToken = crypto.randomBytes(20).toString('hex');
-
     // Inserir o token de redefinição de senha no banco de dados
-    const userId = result.rows[0].id_user;
+    const userId = result.id_user;
+    console.log(userId);
     const expirationDate = new Date(Date.now() + 3600000); // 1 hora a partir de agora
-    await pool.query('INSERT INTO PasswordResetToken (user_id, token, expiration_date) VALUES ($1, $2, $3)', [userId, resetToken, expirationDate]);
+    await createPasswordResetToken(userId, resetToken, expirationDate);
 
     // Enviar um e-mail para o usuário contendo um link com o token de redefinição de senha
-    const resetUrl = `http://localhost:3000/passwordreset/${resetToken}`;
+    const resetUrl = `http://localhost:3000/passwordresetchange/${resetToken}`;
 
     // Crie um objeto de transporte SMTP com as informações da sua conta do Gmail
     let transporter = nodemailer.createTransport({
@@ -307,44 +312,34 @@ app.post('/forgot-password', async (req, res) => {
 });
 
 
-app.put('/change-password', authMiddleware, async (req, res) => {
+app.put('/change-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+  
   try {
-    const userId = req.userPass;
-    const passwordusu = req.userPass;
+    // Pegar id do usuário pelo token
+    const userId = await getUserIdByTokenResetPass(token);
 
-    const { password, confirmPassword } = req.body;
 
-    // Verifica se as senhas novas são iguais
-    if (passwordusu !== confirmPassword) {
-      return res.status(400).send({ message: 'As senhas novas não coincidem.' });
+    console.log(userId);
+    
+    //verifica se a senha está no padrão que foi deifnido
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{9,}$/;
+    if (!regex.test(newPassword)) {
+      return res.status(400).json({ message: 'Senha inválida."A senha deve ter pelo menos 9 caracteres, uma letra maiúscula, uma letra minúscula e um caractere especial"' });
     }
 
-    // Verifica se a nova senha segue o padrão especificado
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{9,}$/;
-    if (!passwordPattern.test(passwordusu)) {
-      return res.status(400).send({ message: 'A nova senha não segue o padrão especificado.' });
-    }
-
-    // Atualiza a senha do usuário
-    const updatePasswordQuery = `
-      UPDATE users
-      SET password = $1
-      WHERE id = $2 AND password = $3
-    `;
-    const values = [confirmPassword,userId, password];
-    const result = await pool.query(updatePasswordQuery, values);
-
-    if (result.rowCount === 0) {
-      return res.status(401).send({ message: 'Senha atual incorreta.' });
-    }
-
-    res.send({ message: 'Senha alterada com sucesso.' });
+    // Atualizar a senha do usuário
+    await UpdatePasswordUser(userId, newPassword);
+    
+    // Deletar o token da tabela PasswordResetToken
+    await deleteResetToken(token);
+    
+    res.status(200).json({ message: 'Senha atualizada com sucesso!' });
   } catch (error) {
     console.error(error);
-    res.status(500).send({ message: 'Ocorreu um erro ao tentar alterar a senha.' });
+    res.status(500).json({ message: 'Erro interno do servidor' });
   }
 });
-
 
 //código para permitir que permitir ocódigo na porta 3000 acesse o servidor na porta 3001.
   app.use(function(req, res, next) {

@@ -5,6 +5,9 @@
     import { Visibility, VisibilityOff } from "@material-ui/icons";
     import { Lock } from '@material-ui/icons';
     import axios from "axios";
+    //para pegar o token que vai ser passado no parâmetro na rota de definição de senha
+    import { useParams } from 'react-router-dom';
+    import { useNavigate } from 'react-router-dom';
 
     const useStyles = makeStyles({
     root: {
@@ -29,7 +32,10 @@
     });
 
     export const PasswordResetChange = () => {
+    const navigate = useNavigate();
     const classes = useStyles();
+    // declara o token que vai ser pego no useParams
+    const { token } = useParams();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showFirstPassword, setShowFirstPassword] = useState(false);
@@ -54,22 +60,19 @@
           return;
         }
       
-        // Verifica se a senha segue o padrão
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{9,}$/;
-        if (!passwordPattern.test(password)) {
-          // Exibe uma mensagem de erro
-          alert('A senha deve ter no mínimo 9 caracteres e conter pelo menos uma letra minúscula, uma letra maiúscula, um número e um caractere especial.');
-          return;
-        }
       
         try {
           // Faz a requisição POST para atualizar a senha do usuário
-          const response = await axios.post('http://localhost:3001/change-password', {
+          const response = await axios.put('http://localhost:3001/change-password', {
             newPassword: password,
+            token: token,
           });
       
           // Exibe uma mensagem de sucesso
           alert(response.data.message);
+
+          //redireciona o usuário para a página de login
+          navigate('/login');
         } catch (error) {
           // Exibe uma mensagem de erro
           alert('Ocorreu um erro ao atualizar a senha.');
