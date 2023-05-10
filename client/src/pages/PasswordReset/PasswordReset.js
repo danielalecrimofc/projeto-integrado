@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button,Grid} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Email } from '@material-ui/icons';
+import axios from "axios";
 
 const useStyles = makeStyles({
   root: {
@@ -30,10 +31,19 @@ export const PasswordReset = () => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event)  => {
     event.preventDefault();
     // Aqui será feito a lógica para enviar o email de redefinição de senha para o usuário
+    try {
+      const response = await axios.post('http://localhost:3001/forgot-password', { email });
+      console.log(response.data.message);
+      // aqui você pode mostrar uma mensagem de sucesso ou redirecionar o usuário para outra página
+    } catch (error) {
+      console.error(error);
+      // aqui você pode mostrar uma mensagem de erro para o usuário
+    }
   };
+
 
   const handleChange = (event) => {
     setEmail(event.target.value);
