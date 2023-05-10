@@ -12,7 +12,7 @@ import {
   Typography, // importar o componente Typography
   makeStyles, // importar o hook makeStyles
 } from "@material-ui/core";
-import { Menu, Close,Home, Lock, PersonAdd,Assignment } from "@material-ui/icons";
+import { Menu, Close,Home, Lock, PersonAdd,Assignment,AccountCircle } from "@material-ui/icons";
 import logo_servmais_app from "../assets/logo_servmais_app.png";
 import {Link} from "react-router-dom";
 import Cookies from 'js-cookie';
@@ -123,6 +123,12 @@ export const LayoutHome = (props) => {
                   <Assignment />
                 </ListItemIcon>
                 <ListItemText primary="Serviços" />
+              </ListItem>
+              <ListItem button component={Link} to="/user" className={classes.listItem}>
+                <ListItemIcon className={classes.icon}>
+                  <AccountCircle />
+                </ListItemIcon>
+                <ListItemText primary="Meu Perfil" />
               </ListItem>
               <ListItem button onClick={handleLogout} className={classes.listItem}>
                 <ListItemIcon className={classes.icon}>
