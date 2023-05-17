@@ -216,9 +216,10 @@ export const Crud = () => {
     const inProgressServices = services.filter(service => service.status_service === 'Em Andamento');
     const completedServices = services.filter(service => service.status_service === 'Realizado');
     
-    window.alert('Quantidade de Serviços Pendentes: ' + pendingServices.length
-    + "\n" +  'Quantidade de Serviços em Andamento: ' + inProgressServices.length + "\n" +
-    'Quantidade de Serviços Realizados: ' + completedServices.length);
+    window.alert('Você tem:' + '\n' +
+       pendingServices.length + ' Serviços Pendentes ' + 
+        "\n"  + inProgressServices.length  + ' Serviços Em Andamento' + "\n" +
+        completedServices.length + ' Serviços Realizados' );
 
     };
   
@@ -354,7 +355,7 @@ export const Crud = () => {
             onClick={generateServiceReports}
             style={{ marginTop: "1rem",background: "linear-gradient(45deg, #006400, #00FF00)"}}
           >
-            Gerar Relatório[STATUS]
+            Gerar Relatório
           </Button>
         </div>
           <TableContainer component={Paper} style={{marginTop:'auto' , marginBottom: 16,overflowX:"auto"}}>
