@@ -210,6 +210,17 @@ export const Crud = () => {
         console.error(error);
       });
   };
+
+  const generateServiceReports = () => {
+    const pendingServices = services.filter(service => service.status_service === 'Pendente');
+    const inProgressServices = services.filter(service => service.status_service === 'Em Andamento');
+    const completedServices = services.filter(service => service.status_service === 'Realizado');
+    
+    window.alert('Quantidade de Serviços Pendentes: ' + pendingServices.length
+    + "\n" +  'Quantidade de Serviços em Andamento: ' + inProgressServices.length + "\n" +
+    'Quantidade de Serviços Realizados: ' + completedServices.length);
+
+    };
   
   /*function validateNumber(event) {
     const value = parseFloat(event.target.value);
@@ -337,6 +348,14 @@ export const Crud = () => {
               style: {color: "white"}
             }}
           />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={generateServiceReports}
+            style={{ marginTop: "1rem",background: "linear-gradient(45deg, #006400, #00FF00)"}}
+          >
+            Gerar Relatório[STATUS]
+          </Button>
         </div>
           <TableContainer component={Paper} style={{marginTop:'auto' , marginBottom: 16,overflowX:"auto"}}>
             <Table>
