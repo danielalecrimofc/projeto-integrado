@@ -20,10 +20,11 @@ import {
   InputLabel,
   InputAdornment,
 } from "@material-ui/core";
-import { Edit, Delete } from "@material-ui/icons";
+import { Edit, Delete,Close as CloseIcon} from "@material-ui/icons";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { makeStyles } from "@material-ui/core/styles";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,6 +68,7 @@ export const Crud = () => {
   const [editService, setEditService] = React.useState(null);
   const [editModal, setEditModal] = React.useState(false);
   const [services,setServices] = React.useState([]);
+  const [openChart, setOpenChart] = React.useState(false);
   const classes = useStyles();
   //url do endpoint que pega todos os serviços do usuário
   const API_URL = "http://localhost:3001/service";
@@ -215,14 +217,29 @@ export const Crud = () => {
     const pendingServices = services.filter(service => service.status_service === 'Pendente');
     const inProgressServices = services.filter(service => service.status_service === 'Em Andamento');
     const completedServices = services.filter(service => service.status_service === 'Realizado');
-    
-    window.alert('Você tem:' + '\n' +
-       pendingServices.length + ' Serviços Pendentes ' + 
-        "\n"  + inProgressServices.length  + ' Serviços Em Andamento' + "\n" +
-        completedServices.length + ' Serviços Realizados' );
+  
+    const data = [
+      { status: 'Pendentes', count: pendingServices.length },
+      { status: 'Em Andamento', count: inProgressServices.length },
+      { status: 'Realizados', count: completedServices.length },
+    ];
 
+    return data;
+  }
+
+ 
+    const handleOpenModalChart = () => {
+      setOpenChart(true);
     };
   
+    const handleCloseModalChart = () => {
+      setOpenChart(false);
+    };
+  
+  const data  = generateServiceReports();
+  
+  
+
   /*function validateNumber(event) {
     const value = parseFloat(event.target.value);
     const maxValue = 9999999999.99;
@@ -292,6 +309,8 @@ export const Crud = () => {
    //console.log('chamou o useEffect com o fetchServices');
    fetchServices();
   }, [fetchServices]);
+
+
   /*React.useEffect(() => {
     console.log('chamou o useEffect com o fetchServices');
     const fetchServices = async () => {
@@ -320,6 +339,7 @@ export const Crud = () => {
     const duplicateServices = isNotUnique(services);
     console.log(duplicateServices);
   }
+  
   
 
 
@@ -352,7 +372,7 @@ export const Crud = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={generateServiceReports}
+            onClick={handleOpenModalChart}
             style={{ marginTop: "1rem",background: "linear-gradient(45deg, #006400, #00FF00)"}}
           >
             Gerar Relatório
@@ -441,7 +461,7 @@ export const Crud = () => {
                     label="Status"
                 >
                     <MenuItem value="Pendente">Pendente</MenuItem>
-                    <MenuItem value="Em andamento">Em andamento</MenuItem>
+                    <MenuItem value="Em Andamento">Em Andamento</MenuItem>
                     <MenuItem value="Realizado">Realizado</MenuItem>
                 </Select>
             </FormControl>
@@ -490,6 +510,35 @@ export const Crud = () => {
         </div>
       </div>
     </Modal>
+    <Modal open={openChart} onClose={handleCloseModalChart}>
+    <div
+            style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "#fff",
+            padding: 20,
+            borderRadius: 5,
+            }}
+        >
+          <div>
+            <IconButton onClick={handleCloseModalChart}>
+              <CloseIcon />
+            </IconButton>
+            <div>
+              <BarChart width={500} height={300} data={data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="status" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#8884d8" />
+              </BarChart>
+            </div>
+          </div>
+      </div>
+      </Modal>
     <Modal open={editModal} onClose={handleCloseEditModal}>
         <div
             style={{
