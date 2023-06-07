@@ -19,6 +19,10 @@ import {
   FormControl,
   InputLabel,
   InputAdornment,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText
 } from "@material-ui/core";
 import { Edit, Delete,Close as CloseIcon} from "@material-ui/icons";
 import axios from "axios";
@@ -69,6 +73,8 @@ export const Crud = () => {
   const [editModal, setEditModal] = React.useState(false);
   const [services,setServices] = React.useState([]);
   const [openChart, setOpenChart] = React.useState(false);
+  const [openModalDelete, setOpenModalDelete] = React.useState(false);
+  const [deleteServiceInfo, setDeleteServiceInfo] = React.useState({ id: '', name: '' });
   const classes = useStyles();
   //url do endpoint que pega todos os serviços do usuário
   const API_URL = "http://localhost:3001/service";
@@ -204,6 +210,7 @@ export const Crud = () => {
           const newServices = services.filter((service) => service.id_service !== id);
           setServices(newServices);
           fetchServices();
+          handleCloseModalDelete();
         }
       })
       .catch((error) => {
@@ -238,7 +245,14 @@ export const Crud = () => {
   
   const data  = generateServiceReports();
   
-  
+  const handleOpenModalDelete = (id,name) => {
+    setDeleteServiceInfo({ id, name });
+    setOpenModalDelete(true);
+  };
+
+  const handleCloseModalDelete = () => {
+    setOpenModalDelete(false);
+  };
 
   /*function validateNumber(event) {
     const value = parseFloat(event.target.value);
@@ -378,9 +392,9 @@ export const Crud = () => {
             Gerar Relatório
           </Button>
         </div>
-          <TableContainer component={Paper} style={{marginTop:'auto' , marginBottom: 16,overflowX:"auto"}}>
+          <TableContainer component={Paper} style={{marginTop:'auto' , marginBottom: 16,maxHeight: '500px', overflowY: 'auto',overflowX: 'auto' }}>
             <Table>
-              <TableHead>
+              <TableHead style={{ position: 'sticky', top: 0,background:"white" }} >
                 <TableRow>
                   <TableCell>ID</TableCell>
                   <TableCell>Nome</TableCell>
@@ -389,36 +403,36 @@ export const Crud = () => {
                   <TableCell>Valor</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-              {services
-                .filter((service) => {
-                    const searchTermNormalized = unidecode(searchTerm.toLowerCase() || '');
-                    if (!searchTermNormalized) {
-                        return true; // Retorna true para mostrar todos os serviços se não houver um searchTerm
-                    }
-                    const serviceNameNormalized = unidecode(service.name_service.toLowerCase());
-                    return serviceNameNormalized.includes(searchTermNormalized);
-                  })
-                  .map((service) => (
-                    //Aqui na TableRow coloquei o service.id_service + 1 para não dar conflito de ids duplicados
-                      <TableRow key={service.id_service + 1}>
-                          <TableCell >{service.id_service}</TableCell>
-                          <TableCell >{service.name_service}</TableCell>
-                          <TableCell >{service.description_service}</TableCell>
-                          <TableCell >{service.status_service}</TableCell>
-                          <TableCell >R$ {service.value_service}</TableCell>
-                          <TableCell>
-                              <IconButton onClick={() => handleOpenEditModal(service)}>
-                                  <Edit />
-                              </IconButton>
-                              <IconButton onClick={() => handleDeleteService(service.id_service,service.name_service)}>
-                                  <Delete />
-                              </IconButton>
-                          </TableCell>
-                      </TableRow>
-                  ))
-                }
-              </TableBody>
+                <TableBody >
+                {services
+                  .filter((service) => {
+                      const searchTermNormalized = unidecode(searchTerm.toLowerCase() || '');
+                      if (!searchTermNormalized) {
+                          return true; // Retorna true para mostrar todos os serviços se não houver um searchTerm
+                      }
+                      const serviceNameNormalized = unidecode(service.name_service.toLowerCase());
+                      return serviceNameNormalized.includes(searchTermNormalized);
+                    })
+                    .map((service) => (
+                      //Aqui na TableRow coloquei o service.id_service + 1 para não dar conflito de ids duplicados
+                        <TableRow key={service.id_service + 1}>
+                            <TableCell >{service.id_service}</TableCell>
+                            <TableCell >{service.name_service}</TableCell>
+                            <TableCell >{service.description_service}</TableCell>
+                            <TableCell >{service.status_service}</TableCell>
+                            <TableCell >R$ {service.value_service}</TableCell>
+                            <TableCell>
+                                <IconButton onClick={() => handleOpenEditModal(service)}>
+                                    <Edit />
+                                </IconButton>
+                                <IconButton onClick={() => handleOpenModalDelete(service.id_service,service.name_service)}>
+                                    <Delete />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
+                    ))
+                  }
+                </TableBody>
             </Table>
           </TableContainer>
         <Modal open={openModal} onClose={handleCloseModal}>
@@ -510,6 +524,35 @@ export const Crud = () => {
         </div>
       </div>
     </Modal>
+    <Modal open={openModalDelete} onClose={handleCloseModalDelete}>
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          backgroundColor: "#fff",
+          padding: 20,
+          borderRadius: 5,
+        }}
+      >
+        <DialogTitle>Confirmação</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Tem certeza de que deseja deletar o serviço {deleteServiceInfo.name}?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModalDelete} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={() => handleDeleteService(deleteServiceInfo.id, deleteServiceInfo.name)} color="secondary">
+            OK
+          </Button>
+        </DialogActions>
+      </div>
+    </Modal>
+
     <Modal open={openChart} onClose={handleCloseModalChart}>
     <div
             style={{
