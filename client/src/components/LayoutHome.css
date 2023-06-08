@@ -119,3 +119,7 @@ nav {
   max-height: 60px;
   margin-right: 1rem;
 }
+
+.menu-button {
+	margin-right: auto;
+  }

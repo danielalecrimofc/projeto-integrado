@@ -28,7 +28,7 @@ import { Edit, Delete,Close as CloseIcon} from "@material-ui/icons";
 import axios from "axios";
 import Cookies from 'js-cookie';
 import { makeStyles } from "@material-ui/core/styles";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -226,15 +226,14 @@ export const Crud = () => {
     const completedServices = services.filter(service => service.status_service === 'Realizado');
   
     const data = [
-      { status: 'Pendentes', count: pendingServices.length },
-      { status: 'Em Andamento', count: inProgressServices.length },
-      { status: 'Realizados', count: completedServices.length },
+      { status: 'Pendentes', pCount: pendingServices.length },
+      { status: 'Em Andamento', eCount: inProgressServices.length },
+      { status: 'Realizados', rCount: completedServices.length },
     ];
 
     return data;
   }
 
- 
     const handleOpenModalChart = () => {
       setOpenChart(true);
     };
@@ -576,7 +575,9 @@ export const Crud = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="count" fill="#8884d8" />
+                <Bar dataKey="pCount" fill="#FF0000" />
+                <Bar dataKey="eCount" fill="#00FF00" />
+                <Bar dataKey="rCount" fill="#0000FF" />
               </BarChart>
             </div>
           </div>
