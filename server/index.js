@@ -28,6 +28,7 @@ const { getUserByEmail } = require("./scripts_usu/getUserByEmail");
 const { createPasswordResetToken } = require("./scripts_usu/createPasswordResetToken");
 const { getUserIdByTokenResetPass } = require('./scripts_usu/getUserIdByTokenResetPass');
 const {deleteResetToken} = require('./scripts_usu/deleteResetToken');
+
 //Variável de COnfiuração do Bd utilizando o arquivo env com as credenciais omitidas
 const config = {
     user:process.env._USER,

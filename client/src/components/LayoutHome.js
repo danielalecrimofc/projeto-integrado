@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
   header: {
     display: "flex",
     alignItems: "center", // centraliza os elementos verticalmente
+    justifyContent:"flex-start",
+    marginRight:"auto"
+    
   },
   logo: {
     height: 60,
@@ -68,7 +71,7 @@ export const LayoutHome = (props) => {
     <>
       <AppBar position="static" style={{ background: 'rgba(0, 0, 0, 0.8)' }}>
         <Toolbar className={classes.header}>
-          <IconButton edge="start" color="inherit" onClick={toggleDrawer}>
+          <IconButton edge="start" color="inherit" onClick={toggleDrawer} className="menu-button">
             <Menu />
           </IconButton>
           <div className={classes.logoContainer}>
