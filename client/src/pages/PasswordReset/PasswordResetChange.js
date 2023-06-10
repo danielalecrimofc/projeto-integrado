@@ -6,6 +6,8 @@
     import { Lock } from '@material-ui/icons';
     import axios from "axios";
     //para pegar o token que vai ser passado no parâmetro na rota de definição de senha
+    import { ToastContainer,toast } from 'react-toastify';
+    import 'react-toastify/dist/ReactToastify.css';
     import { useParams } from 'react-router-dom';
     import { useNavigate } from 'react-router-dom';
 
@@ -56,7 +58,7 @@
         // Verifica se as senhas são iguais
         if (password !== confirmPassword) {
           // Exibe uma mensagem de erro
-          alert('As senhas não são iguais.');
+          toast.error('As senhas não são iguais.');
           return;
         }
       
@@ -69,13 +71,15 @@
           });
       
           // Exibe uma mensagem de sucesso
-          alert(response.data.message);
+          toast.success(response.data.message);
 
-          //redireciona o usuário para a página de login
-          navigate('/login');
+          // Aguarda 1 segundo antes de navegar para a página de login
+            setTimeout(() => {
+            navigate('/login');
+          }, 4000);
         } catch (error) {
           // Exibe uma mensagem de erro
-          alert('Ocorreu um erro ao atualizar a senha.');
+          toast.error('Ocorreu um erro ao atualizar a senha.');
         }
       };
       
@@ -158,6 +162,7 @@
             </Grid>
         </form>
      </div>
+     <ToastContainer/>
     </div>
   );
 };
