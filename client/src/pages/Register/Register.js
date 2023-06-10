@@ -3,6 +3,8 @@ import { useState } from "react";
 import logo_servmais_app from "../../assets/logo_servmais_app.png"
 import { LayoutAuth } from "../../components/LayoutAuth";
 import  { useNavigate } from  'react-router-dom';
+import { ToastContainer,toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 //Função assincrona resultado não disponível imediatamente
@@ -16,7 +18,7 @@ const register = async (name, email, password) => {
     // Verifica se a resposta do servidor retorna um erro 409 (conflito de dados)
     if (error.response && error.response.status === 409) {
       // Se o erro for de email já cadastrado, retorna um erro customizado com a mensagem "Email já cadastrado"
-      throw new Error('Email já cadastrado');
+      throw new Error(toast.error("Email já cadastrado!"));
     }
     // Se não for um erro de email já cadastrado, lança o erro original
     throw error; 
@@ -40,19 +42,21 @@ export const Register = () => {
       // Verifica se a propriedade "error" foi definida no objeto retornado pela função "register"
       if (result.error) {
         // Exibe um alerta com a mensagem de erro retornada pela função "register"
-        window.alert(result.error);
+        toast.error(result.error);
       } else {
         // Exibe um alerta de sucesso quando o usuário é cadastrado com sucesso
-        window.alert("Usuário cadastrado com sucesso");
-        // Navega para a página de login
-        navigate('/login');
+        toast.success("Usuário cadastrado com sucesso");
+        // Aguarda 1 segundo antes de navegar para a página de login
+        setTimeout(() => {
+          navigate('/login');
+        }, 4000);
       }
       //Se for capturado algum erro entra aqui
     } catch (error) {
       // Exibe o erro no console do navegador
       console.error(error);
       // Exibe um alerta de erro genérico
-      window.alert('Erro ao cadastrar usuário');
+      toast.error('Erro ao cadastrar usuário');
     }
   };
   
@@ -159,6 +163,7 @@ export const Register = () => {
           </Link>
         </div>
       </form>
+      <ToastContainer/>
     </LayoutAuth>
   )
 }

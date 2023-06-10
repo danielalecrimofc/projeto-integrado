@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { TextField, Button,Grid} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Email } from '@material-ui/icons';
+import { ToastContainer,toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 const useStyles = makeStyles({
@@ -34,11 +36,12 @@ export const PasswordReset = () => {
     // Aqui será feito a lógica para enviar o email de redefinição de senha para o usuário
     try {
       const response = await axios.post('http://localhost:3001/forgot-password', { email });
-      alert(response.data.message);
-      // aqui você pode mostrar uma mensagem de sucesso ou redirecionar o usuário para outra página
+      //  mostrar uma mensagem de sucesso ou redirecionar o usuário para outra página
+      toast.success(response.data.message);
     } catch (error) {
       console.error(error);
-      // aqui você pode mostrar uma mensagem de erro para o usuário
+      //  mostrar uma mensagem de erro para o usuário
+      toast.error(error);
     }
   };
 
@@ -97,6 +100,7 @@ export const PasswordReset = () => {
           </Grid>
         </form>
       </div>
+     <ToastContainer/>
     </div>
   );
 };

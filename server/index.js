@@ -28,6 +28,7 @@ const { getUserByEmail } = require("./scripts_usu/getUserByEmail");
 const { createPasswordResetToken } = require("./scripts_usu/createPasswordResetToken");
 const { getUserIdByTokenResetPass } = require('./scripts_usu/getUserIdByTokenResetPass');
 const {deleteResetToken} = require('./scripts_usu/deleteResetToken');
+const { getUserPass }  = require("./scripts_usu/getUserPass");
 
 //Variável de COnfiuração do Bd utilizando o arquivo env com as credenciais omitidas
 const config = {
@@ -246,7 +247,11 @@ app.put('/user/pass', authMiddleware, async (req, res) => {
     const isPasswordValid = await ComparePasswordUser(userId, oldPassword);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Senha antiga incorreta' });
+      return res.status(401).json({ message: 'Senha atual incorreta' });
+    }
+
+    if(oldPassword === newPassword){
+      return res.status(401).json({ message: 'A sua nova senha não pode ser igual a senha atual' });
     }
 
     // Atualizar a senha do usuário
@@ -315,18 +320,22 @@ app.post('/forgot-password', async (req, res) => {
 
 app.put('/change-password', async (req, res) => {
   const { token, newPassword } = req.body;
-  
   try {
     // Pegar id do usuário pelo token
     const userId = await getUserIdByTokenResetPass(token);
 
+    const oldPassword = await getUserPass(userId);
 
     console.log(userId);
+
+    if(oldPassword === newPassword){
+      return res.status(400).json({ message: 'A sua nova senha não pode ser igual a senha atual' });
+    }
     
-    //verifica se a senha está no padrão que foi deifnido
+    //verifica se a senha está no padrão que foi definido
     const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{9,}$/;
     if (!regex.test(newPassword)) {
-      return res.status(400).json({ message: 'Senha inválida."A senha deve ter pelo menos 9 caracteres, uma letra maiúscula, uma letra minúscula e um caractere especial"' });
+      return res.status(400).json({ message: 'Senha inválida. A senha deve ter pelo menos 9 caracteres, uma letra maiúscula, uma letra minúscula e um caractere especial' });
     }
 
     // Atualizar a senha do usuário

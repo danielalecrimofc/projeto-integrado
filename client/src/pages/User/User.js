@@ -5,6 +5,8 @@ import { AccountCircle, Email, Lock } from '@material-ui/icons';
 import IconButton from "@material-ui/core/IconButton";
 import SaveIcon from "@material-ui/icons/Save";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { ToastContainer,toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import Cookies from 'js-cookie';
 
@@ -64,14 +66,14 @@ export const User = () => {
          )
         .then(response => {
           // código para lidar com a resposta do servidor
-          alert("Nome Alterado com Sucesso => " + response.data.user.name);
+          toast.success("Nome Alterado com Sucesso => " + response.data.user.name);
         })
         .catch(error => {
           // código para lidar com o erro da requisição
           if (error.response && error.response.data && error.response.data.message) {
-            alert("Erro ao Atualizar nome do Usuário! => " + error.response.data.message);
+            toast.error("Erro ao Atualizar nome do Usuário! => " + error.response.data.message);
           } else {
-            alert("Erro ao Atualizar nome do Usuário! => " + error);
+            toast.error("Erro ao Atualizar nome do Usuário! => " + error);
           }
         });
   };
@@ -89,15 +91,15 @@ export const User = () => {
       )
      .then(response => {
        // código para lidar com a resposta do servidor
-       alert("Email Alterado com Sucesso => " + response.data.user.email);
+       toast.success("Email Alterado com Sucesso => " + response.data.user.email);
      })
      .catch(error => {
        // código para lidar com o erro da requisição
        // código para lidar com o erro da requisição
        if (error.response && error.response.data && error.response.data.message) {
-        alert("Erro ao Atualizar email do Usuário! => " + error.response.data.message);
+        toast.error("Erro ao Atualizar email do Usuário! => " + error.response.data.message);
       } else {
-        alert("Erro ao Atualizar email do Usuário! => " + error);
+        toast.error("Erro ao Atualizar email do Usuário! => " + error);
       }
      });
   };
@@ -121,15 +123,15 @@ export const User = () => {
   )
   .then((response) => {
     // Código para lidar com a resposta do servidor
-    alert(response.data.message);
+    toast.success(response.data.message);
   })
   .catch((error) => {
     // Código para lidar com o erro da requisição
     console.error(error);
     if (error.response && error.response.data && error.response.data.message) {
-      alert("Erro ao Atualizar a senha do Usuário! => " + error.response.data.message);
+      toast.error("Erro ao Atualizar a senha do Usuário! => " + error.response.data.message);
     } else {
-      alert("Erro ao Atualizar a senha do Usuário! => " + error);
+      toast.error("Erro ao Atualizar a senha do Usuário! => " + error);
     }
   });
   };
@@ -253,7 +255,7 @@ export const User = () => {
               <TextField
                 fullWidth
                 id="oldPassword"
-                label="Senha antiga"
+                label="Senha atual"
                 type={showOldPassword ? 'text' : 'password'}
                 required
                 value={oldPassword}
@@ -318,6 +320,7 @@ export const User = () => {
           </Grid>
         </form>
         </div>
+        <ToastContainer/>
         </div>
    );
 };

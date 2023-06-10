@@ -3,6 +3,8 @@ import {useState} from "react";
 import { LayoutAuth } from "../../components/LayoutAuth"
 import logo_servmais_app from "../../assets/logo_servmais_app.png"
 import  { useNavigate } from  'react-router-dom';
+import { ToastContainer,toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -45,7 +47,7 @@ export const Login = () => {
       // verifica se o token foi recebido na resposta
       if (!response) {
         // lança um erro caso o token não seja encontrado
-        throw new Error('Token not found in response');
+        throw new Error(toast.error('Token not found in response'));
       }
       // armazena o token da resposta em uma variável
       const token = response;
@@ -58,11 +60,11 @@ export const Login = () => {
       // exibe mensagem de erro no console caso ocorra algum problema
       if (error.response && error.response.status === 401) {
         // erro de login inválido
-        window.alert("Email ou senha inválidos");
+        toast.error("Email ou senha inválidos");
       } else {
         // erro genérico
         console.error(error);
-        window.alert("Ocorreu um erro ao fazer login. Por favor, tente novamente mais tarde.");
+        toast.error("Ocorreu um erro ao fazer login. Por favor, tente novamente mais tarde.");
       }
       //console.error(error);
       //window.alert("Email ou senha inválidos");
@@ -143,6 +145,7 @@ export const Login = () => {
               <Link className="txt2" to="/passwordreset">Redefina sua senha</Link>
             </div>
           </form>
+          <ToastContainer/>
       </LayoutAuth> 
   );
 }
